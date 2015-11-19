@@ -1,0 +1,255 @@
+package com.petro.navigator;
+
+import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ListView;
+
+import com.here.android.mpa.odml.MapLoader;
+import com.here.android.mpa.odml.MapPackage;
+import com.petro.navigator.misc.MPAdapter;
+import com.petro.navigator.misc.Utils;
+import com.petro.navigator.model.LocationModel;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import cn.pedant.SweetAlert.SweetAlertDialog;
+
+/**
+ *
+ * Activity splash screen
+ *
+ */
+public class SyncActivity extends AppCompatActivity {
+
+    // Variáveis
+    // Controle de liste de itens de pacotes de mapa
+    private ListView syncList;
+    private SyncActivity self = null;
+
+    /**
+     * Construtor
+     */
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_sync);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        toolbar.setTitle("Sincronismo - v1.0.7");
+        setTitle("Sincronismo - v1.0.7");
+        self = this;
+
+        syncList =(ListView)findViewById(R.id.sync_list);
+    }
+
+    @Override
+    protected void onPostCreate(@Nullable Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+
+        AppManager.mapLoader.addListener(mapLoaderListener);
+        AppManager.mapLoader.getMapPackages();
+
+        Log.w("MAPPACK", "Chamou o listener");
+    }
+
+    @Override
+    protected void onDestroy() {
+
+        super.onDestroy();
+        AppManager.mapLoader.removeListener(mapLoaderListener);
+    }
+
+    /**
+     * Caso uma sincronização  esteja sendo realizada, não deixa sair da tela até o término da mesma
+     */
+    @Override
+    public void onBackPressed() {
+        if (AppManager.getState() != AppManager.STATE.Syncing)
+            super.onBackPressed();
+        else
+            Utils.showAlert(this, "Existe um sincronismo em andamento!");
+    }
+
+    /**
+     * Carreag a lista no ListView
+     */
+    private void loadList(){
+
+        // Limpa o adapter e atualiz a lista
+        syncList.setAdapter(null);
+        syncList.refreshDrawableState();
+
+        // Pega o tamanho referente a quantidade de arquivos na lista global de pacotes de mapa
+        String[] size = new String[AppManager.mapPackages.size()];
+
+        // Cria o adaptador customizado em misc.MapPackageAdapater
+        MPAdapter adapter = new MPAdapter(SyncActivity.this, size);
+
+        //Informa o adapter e atualiza o view
+        syncList.setAdapter(adapter);
+        syncList.refreshDrawableState();
+        syncList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
+
+                // Caso exista algum sincronismo em andamento, neminha ação é executada e uma mensagem é exibgida
+                if (AppManager.getState() == AppManager.STATE.Syncing) {
+                    Utils.showAlert(self, "Existe um sincronismo em andamento!");
+                    return;
+                }
+
+                // Aview selecionada
+                final View mapPackageView = arg1;
+
+                // Pega o pacote, atualiza o etado da aplicação para "sincronizando"
+                final MapPackage mapPackage = AppManager.mapPackages.get(position);
+                final MapPackage.InstallationState state = mapPackage.getInstallationState();
+
+                String question = state == MapPackage.InstallationState.INSTALLED ? "Deseja remover o pacote selecionado?" : "Deseja instalar o pacote selecionado?";
+                String button = "Sim," + (state == MapPackage.InstallationState.INSTALLED ? "remova" : "instale") +  "!";
+                int image = state == MapPackage.InstallationState.INSTALLED ? R.drawable.trash_64 : R.drawable.download_64;
+
+                // Reliza a pegunta sobre a certeza de instalar ou remover os pacotes.
+                new SweetAlertDialog(self, SweetAlertDialog.CUSTOM_IMAGE_TYPE)
+                        .setCustomImage(image)
+                        .setTitleText("Tem certeza?")
+                        .setContentText(question)
+                        .setConfirmText(button)
+                        .setCancelText("Não")
+                        .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                            @Override
+                            public void onClick(SweetAlertDialog sDialog) {
+                                sDialog.dismissWithAnimation();
+
+                                AppManager.mapPackageView = mapPackageView;
+                                AppManager.setState(AppManager.STATE.Syncing);
+
+                                // Cria uma lista com os ids para instalação
+                                List<Integer> mapPackageIds = new ArrayList<Integer>();
+                                mapPackageIds.add(mapPackage.getId());
+
+                                boolean done;
+
+                                // Dependendo do estado do pacote, instala ou  desinstala o pacote
+                                if (state == MapPackage.InstallationState.INSTALLED)
+                                    done = AppManager.mapLoader.uninstallMapPackages(mapPackageIds);
+                                else
+                                    done = AppManager.mapLoader.installMapPackages(mapPackageIds);
+
+                                // Caso existem problemas durante a instalação ou desisntalação do pacote, uma mensagem é exibida
+                                if (!done)
+                                    Utils.showError(self, "Problemas ao" + (state == MapPackage.InstallationState.INSTALLED ? " remover " : " instalar ") + "o pacote " + mapPackage.getTitle());
+                            }
+                        })
+                        .show();
+            }
+        });
+    }
+
+    /**
+     * Inicializa os pacotes de mapa. Existe uma estrutrura de árvore, onde o primeiro pacote ramifica para n pacotes
+     * onde cada um desses n pacotes ramificam para mais m pacotes, ou seja, é um função com chamada recursiva
+     * @param mapPackage O pacote de mapa atual
+     * @param store Indica se o pacote de mapa atual deve ser armazenado noa lista gloobal
+     */
+    private void initMapPackages(MapPackage mapPackage, boolean store){
+        initMapPackages(mapPackage, store, "");
+    }
+    private void initMapPackages(MapPackage mapPackage, boolean store, String teste){
+
+
+
+        // Verfiica se o pacote de mapa nao é nulo
+        if (mapPackage != null) {
+
+            String label = teste + " | " + mapPackage.getTitle();
+
+            Log.w("MAPPAC", label);
+
+            // Verifica se deve ser armazenado na lista global de pacotes de maapa
+            if (store)
+                AppManager.mapPackages.add(mapPackage);
+
+            // Verifica se o pacote atual é o Brasil, caso seja, todos os pactoes filhos serão armazenados na lista global de pacotes de maaps
+            boolean addInList = store ?  true : ( mapPackage.getTitle().equals("Brazil") ? true : false);
+
+            // Para cada pacote de mapa filho, a mesma função (recursiva) é executada
+            for (MapPackage child : mapPackage.getChildren())
+                initMapPackages(child, addInList, label);
+        }
+    }
+
+    /**
+     * Listener responsável por capturar os eventos relacionados à instação, desinstação e progresso dos pacotes de amap
+     */
+    MapLoader.Listener mapLoaderListener = new MapLoader.Listener() {
+
+        /**
+         * Quandoa a remoção de um pacote é concluída
+         */
+        public void onUninstallMapPackagesComplete(MapPackage rootMapPackage, MapLoader.ResultCode mapLoaderResultCode) {
+            AppManager.mapPackageView.setBackgroundColor(self.getResources().getColor(R.color.mapInstalled));
+
+            AppManager.setState(AppManager.STATE.Sync);
+            AppManager.mapLoader.getMapPackages();
+        }
+
+        /**
+         * Quando a instação de um pacote está concluíoda
+         */
+        public void onInstallMapPackagesComplete(MapPackage rootMapPackage, MapLoader.ResultCode mapLoaderResultCode) {
+            AppManager.mapPackageView.setBackgroundColor(self.getResources().getColor(R.color.mapNotInstalled));
+
+            AppManager.setState(AppManager.STATE.Sync);
+            AppManager.mapLoader.getMapPackages();
+        }
+
+        /**
+         * Qaundo a solicitação dos pacotes de mapa dipníveis é concluṕida
+         * @param rootMapPackage O primeiro elemento dos pacotes de mapa disponíveis
+         * @param mapLoaderResultCode Resultado do carregamento
+         */
+        public void onGetMapPackagesComplete(MapPackage rootMapPackage, MapLoader.ResultCode mapLoaderResultCode) {
+
+            Log.w("MAPPACK", "Entrou no listener");
+
+            // shows loading
+            AppManager.hideView(self, R.id.sync_loading);
+            AppManager.showView(self, R.id.sync_list);
+
+            // Limpa a variaǘel global referente aps pacotes de mapa
+            AppManager.mapPackages = new ArrayList<MapPackage>();
+
+            // Inicializa os pacotes de mapa
+            initMapPackages(rootMapPackage, false);
+
+            Log.w("MAPPACK", "Filtrou os pacotes : " + String.valueOf(AppManager.mapPackages.size()));
+
+            // Carrega o list view
+            loadList();
+        }
+
+        /**
+         * Ao correr do processo, a porcentagem é atualizada
+         * @param progressPercentage Percentual de progresso
+         */
+        public void onProgress(int progressPercentage) { }
+
+        /**
+         * Metodos necessários para implementação, porém não utilizados
+         */
+        public void onPerformMapDataUpdateComplete(MapPackage rootMapPackage, MapLoader.ResultCode mapLoaderResultCode) {
+        }
+        public void onInstallationSize(long diskSize, long networkSize) {
+        }
+        public void onCheckForUpdateComplete(boolean updateAvailable, String currentMapVersion,String newestMapVersion, MapLoader.ResultCode mapLoaderResultCode) {
+        }
+    };
+}

@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/detail"
+
+    android:layout_alignParentEnd="true"
+    android:layout_alignParentBottom="true"
+
+    android:paddingLeft="@dimen/default_paddingLeft"
+    android:paddingRight="@dimen/default_paddingRight"
+    android:paddingTop="@dimen/default_paddingTop"
+
+    android:layout_width="match_parent"
+    android:layout_height="130dp"
+
+    android:backgroundTintMode="src_over"
+    android:backgroundTint="@color/colorPrimary"
+    android:background="@color/colorPrimary">
+
+    <RelativeLayout
+        android:id="@+id/detail_info"
+        android:orientation="vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent"
+        android:gravity="bottom|top"
+        android:layout_centerVertical="true"
+        android:layout_alignParentStart="true">
+
+        <TextView
+            android:layout_alignParentLeft="true"
+            android:id="@+id/detail_title"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/font_l"
+            android:textStyle="bold"
+            android:textColor="@color/colorAccent" />
+
+        <TextView
+            android:id="@+id/detail_time"
+            android:layout_below="@id/detail_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingTop="@dimen/detail_paddingTop"
+            android:textSize="@dimen/font_m"
+            android:textColor="@color/textColorLight"/>
+
+        <TextView
+            android:id="@+id/detail_distance"
+            android:layout_below="@id/detail_title"
+            android:layout_toRightOf="@id/detail_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:paddingTop="@dimen/detail_paddingTop"
+            android:textSize="@dimen/font_m"
+            android:textStyle="bold"
+            android:textColor="@color/textColorLight"/>
+
+
+
+        <LinearLayout
+            android:id="@+id/detail_road_container"
+            android:orientation="horizontal"
+            android:paddingTop="@dimen/detail_paddingTop"
+            android:scrollHorizontally="true"
+            android:singleLine="true"
+            android:maxWidth="@dimen/detail_max_width"
+            android:layout_below="@id/detail_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Via "
+                android:textColor="@color/textColorLight"/>
+            <TextView
+                android:id="@+id/detail_road"
+                android:layout_below="@id/detail_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingTop="@dimen/detail_paddingTop"
+                android:textSize="@dimen/font_m"
+                android:textColor="@color/textColorLight"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:paddingTop="@dimen/detail_paddingTop"
+            android:layout_below="@id/detail_road_container"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Previsão de chegada "
+                android:textColor="@color/textColorLight"/>
+            <TextView
+                android:id="@+id/detail_arrival"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/font_m"
+                android:textColor="@color/textColorLight"/>
+        </LinearLayout>
+
+    </RelativeLayout>
+
+    <ImageView
+        android:id="@+id/detail_navigation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="16dp"
+        android:paddingTop="18dp"
+        android:src="@drawable/car64"
+        android:layout_alignParentStart="false" />
+
+    <!--
+    <ImageView
+        android:id="@+id/detail_hide"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginRight="16dp"
+        android:paddingTop="18dp"
+        android:src="@drawable/close32"
+        android:contentDescription="Esconder" />
+    -->
+
+    <ProgressBar
+        android:id="@+id/detail_loading"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:background="@color/colorPrimary"
+        android:backgroundTint="@color/colorPrimary"
+        android:alpha="0" />
+
+</RelativeLayout>

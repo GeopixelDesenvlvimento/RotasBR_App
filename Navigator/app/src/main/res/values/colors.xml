@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+
+
+    <!--<color name="colorPrimary">#4285F4</color>-->
+    <color name="colorPrimary">#071028</color>
+    <color name="colorPrimaryDark">#071028</color>
+    <color name="colorPrimaryLight">#0B2C65</color>
+
+    <color name="warningColor">#ff0</color>
+
+
+    <!--
+    <color name="colorPrimaryDark">#3367D6</color>
+    <color name="colorAccent">#FF4081</color>
+    -->
+    <color name="colorAccent">#00B6FF</color>
+
+    <color name="colorDetails">#5E546C</color>
+    <color name="textColorDark">#333</color>
+    <color name="textColorLight">#fff</color>
+
+
+    <color name="mapInstalled">#ccffcc</color>
+    <color name="mapNotInstalled">#ffcccc</color>
+    <color name="mapInstalling">#ffffcc</color>
+</resources>

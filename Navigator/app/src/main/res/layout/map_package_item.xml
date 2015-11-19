@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingTop="@dimen/default_paddingTop"
+    android:paddingRight="@dimen/default_paddingRight"
+    android:paddingBottom="@dimen/default_paddingBottom"
+    android:paddingLeft="@dimen/default_paddingLeft">
+
+    <ImageView
+        android:id="@+id/map_package_img"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:src="@drawable/download_64"
+
+        android:paddingTop="@dimen/image_paddingTop"
+        android:paddingRight="@dimen/image_paddingRight"
+        android:paddingBottom="@dimen/image_paddingBottom"
+        android:paddingLeft="@dimen/image_paddingLeft"
+        />
+
+    <TextView
+        android:id="@+id/map_package_title"
+        android:layout_toRightOf="@id/map_package_img"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/image_paddingLeft"
+        android:singleLine="true"
+        android:text="TITULO"
+        android:textSize="@dimen/font_m"/>
+
+    <TextView
+        android:id="@+id/map_package_status"
+        android:layout_toRightOf="@id/map_package_img"
+        android:layout_below="@id/map_package_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/image_paddingLeft"
+        android:singleLine="true"
+        android:text="STATUS"
+        android:textSize="@dimen/font_s"/>
+
+    <TextView
+        android:id="@+id/map_package_size"
+        android:layout_toRightOf="@id/map_package_status"
+        android:layout_below="@id/map_package_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/default_paddingLeft"
+        android:singleLine="true"
+        android:text="100 mb"
+        android:textSize="@dimen/font_s"
+        android:textStyle="bold"/>
+
+    <ProgressBar
+        style="?android:attr/progressBarStyleHorizontal"
+        android:id="@+id/map_package_percentage"
+        android:layout_toRightOf="@id/map_package_img"
+        android:layout_below="@id/map_package_status"
+        android:layout_width="match_parent"
+        android:layout_height="10dp"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:max="100"
+        android:progress="0"/>
+
+
+</RelativeLayout>

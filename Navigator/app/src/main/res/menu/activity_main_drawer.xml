@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+
+        <item
+            android:id="@+id/nav_sync"
+            android:icon="@android:drawable/ic_menu_gallery"
+            android:enabled="false"
+            android:title="Sincronizar" />
+
+        <item
+            android:id="@+id/nav_search_pois"
+            android:icon="@android:drawable/ic_menu_directions"
+            android:title="Buscar Pois" />
+
+        <item
+            android:id="@+id/nav_exit"
+            android:icon="@android:drawable/ic_menu_close_clear_cancel"
+            android:title="Sair" />
+
+    </group>
+
+</menu>

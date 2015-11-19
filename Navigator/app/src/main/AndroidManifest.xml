@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.petro.navigator" >
+
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme"
+        tools:replace="android:icon,android:theme" >
+        <activity
+            android:name=".MainActivity"
+            android:label="@string/app_name"
+            android:theme="@style/AppTheme.NoActionBar" >
+        </activity>
+        <activity
+            android:name=".SearchActivity"
+            android:label="@string/title_activity_search"
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/AppTheme.NoActionBar" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.petro.navigator.MainActivity" />
+        </activity>
+
+        <service
+            android:name="com.here.android.mpa.service.MapService"
+            android:exported="true"
+            android:label="HereMapService"
+            android:process="global.Here.Map.Service.v2" >
+            <intent-filter>
+                <action android:name="com.here.android.mpa.service.MapService" >
+                </action>
+            </intent-filter>
+        </service>
+
+        <meta-data
+            android:name="com.here.android.maps.appid"
+            android:value="pGtWmIPmSIX7EET4rFYF" />
+        <meta-data
+            android:name="com.here.android.maps.apptoken"
+            android:value="2O5Rj_UR4mjA2wKFb_XapA" />
+        <meta-data
+            android:name="com.here.android.maps.license.key"
+            android:value="J+tYiiZ/SWYzXzWcECvxj73ebMCTho29+iQRZ4XwjXP+rQMGCltpvA2fM80DBJcAJ5OtgUn+fO9rUCnmUb2VsU2SdUtFBB966y5+E3iqIQX/tGlvhhKjTQnrv5+neQHtVfBMujLTFV1ONQmnRjNtV9OUZanS/aFEGiK0wEA93kBU/a25rAGJ558pV4orka7e2FfxtJ+Fngs3nQ+1+zhtyzX0/+jdNTzYWnGf8LUvf6W1QFBzvWR6qEdtGIVOevCifMIBUClBBCF6H019Bv9FR/L1FB3owxcSVhaYTbGB78xahoQlB+/GJLS6aptTBAy61pSzykO04dplIudJXo+gcLbRBgvMFRqar2HTlhwXiReg/wKk2eT8ddSZw5xmlMfIrbwjmAJdpMsO4d4q4P5a6XYGu5YUXsyNS+5jSHH9wP+AoHs0d6lStGgzUcHn9Qv1X/MLfVJF7j7aYNvQejNywAPvbZWdnJDTbnlSj+mbf7b+7x4HVPUmLbzEp6wlWOgeXM0BWfzfbsRMkPB/Nu7J6Bqr6hm9I1pKi0x+fxW21cWxLCxjqk27m71cVHvXXYRIrmTuwCiJhNPhSiGfm19LQQvwezAdYuRTbFn1QuH4BJx5s+d/pXR8KxHP32YAwUiIGFfuj8hPJlFF3GtICzk8ihYUYcV6ZKi7JdOvZPj/eMs=" />
+
+        <activity
+            android:name=".SyncActivity"
+            android:label="@string/title_activity_sync"
+            android:theme="@style/AppTheme.NoActionBar" >
+        </activity>
+        <activity
+            android:name=".SplashActivity"
+            android:label="@string/title_activity_splash"
+            android:theme="@style/AppTheme.NoActionBar" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <receiver android:name=".misc.NetworkStateReceiver" >
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+            </intent-filter>
+        </receiver>
+
+        <!--
+        <activity
+            android:name=".PoiActivity"
+            android:label="@string/title_activity_poi"
+            android:theme="@style/AppTheme.NoActionBar" >
+        </activity>
+        -->
+        <activity
+            android:name=".PoiActivity"
+            android:label="@string/title_activity_poi"
+            android:theme="@style/AppTheme.NoActionBar" >
+        </activity>
+    </application>
+
+</manifest>

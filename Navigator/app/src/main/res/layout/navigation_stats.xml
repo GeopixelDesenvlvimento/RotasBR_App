@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/navigation_stats"
+    android:orientation="horizontal"
+
+    android:layout_alignParentEnd="true"
+    android:layout_alignParentBottom="true"
+
+    android:paddingTop="@dimen/default_paddingTop"
+    android:paddingBottom="@dimen/default_paddingBottom"
+    android:paddingLeft="@dimen/default_paddingLeft"
+    android:paddingRight="@dimen/default_paddingRight"
+
+    android:layout_width="match_parent"
+    android:layout_height="80dp"
+
+    android:backgroundTintMode="src_over"
+    android:backgroundTint="@color/colorPrimary"
+    android:background="@color/colorPrimary">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_weight=".33"
+        android:layout_width="0dp"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/navigation_speed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorAccent"
+            android:textSize="@dimen/font_xxl"
+            android:textStyle="bold"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/textColorLight"
+            android:textSize="@dimen/font_m"
+            android:textStyle="normal"
+            android:text="km/h"/>
+
+    </LinearLayout>
+    <View
+        android:layout_width="1dp"
+        android:layout_height="match_parent"
+        android:background="@color/textColorLight"/>
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_weight=".33"
+        android:layout_width="0dp"
+        android:layout_height="match_parent">
+        <TextView
+            android:id="@+id/navigation_arrival"
+            android:layout_gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorAccent"
+            android:textSize="@dimen/font_xxl"
+            android:textStyle="bold"/>
+        <TextView
+            android:layout_gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/textColorLight"
+            android:textSize="@dimen/font_m"
+            android:textStyle="normal"
+            android:text="chegada"/>
+
+    </LinearLayout>
+    <View
+        android:layout_width="1dp"
+        android:layout_height="match_parent"
+        android:background="@color/textColorLight"/>
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_weight=".33"
+        android:layout_width="0dp"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_gravity="right"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingRight="@dimen/default_paddingRight"
+                android:src="@drawable/cars_32"/>
+
+            <TextView
+                android:id="@+id/navigation_minsto"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorAccent"
+                android:textSize="@dimen/font_xxl"
+                android:textStyle="bold"/>
+
+        </LinearLayout>
+
+        <TextView
+            android:layout_gravity="right"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/textColorLight"
+            android:textSize="@dimen/font_m"
+            android:textStyle="normal"
+            android:text="min"/>
+
+    </LinearLayout>
+
+</LinearLayout>

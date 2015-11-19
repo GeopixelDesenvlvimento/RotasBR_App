@@ -1,0 +1,71 @@
+package com.petro.navigator.misc;
+
+import android.app.Activity;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
+import android.widget.TextView;
+
+import com.here.android.mpa.odml.MapPackage;
+import com.petro.navigator.AppManager;
+import com.petro.navigator.R;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ *
+ * Classe auxiliar renderer da lista de pacotes disponíveis
+ */
+public class MPAdapter extends ArrayAdapter<String> {
+
+    // Variáveis
+    // Contexto
+    private final Activity context;
+
+    /**
+     * Construtor
+     * @param context Contexto da app
+     * @param size Array somente para a quantidade, não necessita ter valores
+     */
+    public MPAdapter(Activity context, String[] size) {
+        super(context, R.layout.list_item_sync, size);
+        this.context = context;
+    }
+
+    /**
+     * Método sobreescrito para renderização dos valores de cada linha do listview
+     * @param position Posição do item que está sendo renderizado
+     * @param view Atual View
+     * @param parent Parent da atual view
+     * @return Retorna a view completa e customizada
+     */
+    @Override
+    public View getView(final int position, View view, ViewGroup parent) {
+
+        LayoutInflater inflater = context.getLayoutInflater();
+        View rowView= inflater.inflate(R.layout.list_item_sync, null, true);
+
+        // Pèga do lista global de pacotes de mapa o pacore correspondente à posição do item
+        MapPackage mapPackage = AppManager.mapPackages.get(position);
+        MapPackage.InstallationState state = mapPackage.getInstallationState();
+
+        // Inicializa variáveis da atual view  e o título e o tamanho do pacote
+        ((TextView) rowView.findViewById(R.id.map_package_title)).setText(mapPackage.getTitle() + " - " + Utils.kiloToMegaLabel(mapPackage.getSize() , 1) + " mb");
+
+
+        // Valida se o pacote está instalado e seta os comportamentos
+        if (state == MapPackage.InstallationState.INSTALLED) {
+            rowView.setBackgroundColor( context.getResources().getColor(R.color.mapInstalled));
+        }
+        else {
+            rowView.setBackgroundColor(context.getResources().getColor(R.color.mapNotInstalled));
+        }
+
+        // retorna a view
+        return rowView;
+    }
+}
