@@ -6,8 +6,7 @@
         <item
             android:id="@+id/nav_sync"
             android:icon="@android:drawable/ic_menu_gallery"
-            android:enabled="false"
-            android:title="Sincronizar" />
+            android:title="Atualizar Banco de dados" />
 
         <item
             android:id="@+id/nav_search_pois"

@@ -14,6 +14,7 @@ import com.petro.navigator.dao.LocationDAO;
 import com.petro.navigator.misc.Utils;
 import com.petro.navigator.model.LocationModel;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,7 +22,7 @@ import java.util.List;
  *
  * Classe de gestão das localidades (POIs)
  */
-public class Location {
+public class Location implements Serializable {
 
     // Variáveis
     private LocationDAO dao; // DATA ACCESS OBJECT da classe Location
@@ -64,10 +65,10 @@ public class Location {
         dao = new LocationDAO(context);
 
         // Mocka os dados
-        if (mockData) mockData();
+        //if (mockData) mockData();
 
         // Busca, preenche a lista  e plota no mapa os dados.
-        fill();
+        //fill();
     }
 
     /**
@@ -79,8 +80,10 @@ public class Location {
         this.all();
 
         // Adiciona os dados recuperados no mapa
-        for(LocationModel location : locations)
+        for(LocationModel location : locations) {
             AppManager.map.addMapObject(location.getMarker());
+            location.getMarker().showInfoBubble();
+        }
     }
 
     /**
@@ -91,6 +94,7 @@ public class Location {
 
         // Adiciona o marker à variavel global
         AppManager.selectedLocation = marker;
+        AppManager.selectedLocation.showInfoBubble();
 
         // Valida se o GPS já capturou alguma localização, e caso tenhas capturado, realiza o cálculo da rota, caso contrário, exibe uma mensagem para aguardar o GDP
         if (AppManager.currentPosition != null)
@@ -119,8 +123,12 @@ public class Location {
                         cursor.getInt(0),
                         cursor.getString(1),
                         cursor.getString(2),
-                        cursor.getFloat(3),
-                        cursor.getFloat(4)));
+                        cursor.getString(3),
+                        cursor.getString(4),
+                        cursor.getString(5),
+                        cursor.getInt(6),
+                        cursor.getFloat(7),
+                        cursor.getFloat(8)));
             }
             while (cursor.moveToNext());
         }
@@ -148,6 +156,54 @@ public class Location {
         return serialize( dao.like(value) );
     }
 
+    public List<LocationModel> likeMoreFields(String stateValue, String typeValue, String contentValue , String idValue){
+
+        return serialize( dao.likeMoreFields(stateValue, typeValue, contentValue, idValue) );
+    }
+
+    public Integer likeMoreFieldsCount(String stateValue, String typeValue, String contentValue , String idValue){
+
+        return Integer.parseInt(dao.likeMoreFieldsCount(stateValue, typeValue, contentValue, idValue).getString(0).toString());
+    }
+
+
+    /**
+     * Busca os registros do banco de dados via like no campo descrição
+     * @return Lista de modelo de localidade
+     */
+    public List<LocationModel> lastValue(){
+
+        return serialize(dao.lastValue());
+    }
+
+    /**
+     * Busca os registros do banco de dados via like no campo descrição
+     * @return Lista de modelo de localidade
+     */
+    public List<LocationModel> getValeuGroupBy(String field){
+
+        return serialize( dao.getValeuGroupBy(field) );
+    }
+
+    /**
+     * Busca os registros do banco de dados via like no campo descrição
+     * @return Lista de modelo de localidade
+     */
+    public List<LocationModel> WhereClause(String whereClause, String field){
+
+        return serialize( dao.WhereClause(whereClause, field) );
+    }
+
+    /**
+     * Busca todos os registros do banco de dados.
+     * @return Lista de modelo de localidade
+     */
+    public void deleteAll(String whereClause){
+
+        // Serializa os registros que foram recuperados do banco de dados
+         dao.deleteAll(whereClause);
+    }
+
     /**
      * Pega localidade da lista baseada na descrição
      * @param desc Descriçaõ para comparação
@@ -172,32 +228,52 @@ public class Location {
     }
 
     /**
+     * Adicionar o ponto no mapa
+     * @param location Localização que será adicionada no mapa
+     */
+    public void addMarkerMap(LocationModel location){
+        AppManager.map.addMapObject(location.getMarker());
+        location.getMarker().showInfoBubble();
+    }
+
+    /**
      * Método que mpcka dados no banco de dados. Deve ser retirado na versão final da app
      */
     public void mockData() {
 
-        // Insere os pontos em um veto
-        List<LocationModel> points = new ArrayList<LocationModel>();
-        points.add(new LocationModel("Localidade", "Restaurante Mexicano",        (float) -45.886938233999615 , (float) -23.179439339999607 ));
-        points.add(new LocationModel("Localidade", "Comemoração", (float) -45.8871903839996   , (float) -23.179239600999626 ));
-        points.add(new LocationModel("Localidade", "teste",                                      (float) -45.891551633505351 , (float) -23.169872112666045 ));
-        points.add(new LocationModel("Localidade", "Atuação",    (float) -45.900516162999622 , (float) -23.157171200999588 ));
-        points.add(new LocationModel("Localidade", "Ponto de encontro",    (float) -45.893566406999639 , (float) -23.249376388999639 ));
-        points.add(new LocationModel("Localidade", "Ponto de encontro 2",    (float) -45.86094854099963  , (float) -23.205829497999613 ));
-        points.add(new LocationModel("Localidade", "Nasci aqui",    (float) -45.886938233999615 , (float) -23.179439339999607 ));
-        points.add(new LocationModel("Localidade", "Ponte de referência 2",                                 (float) -45.886938233999615 , (float) -23.179439339999607 ));
-        points.add(new LocationModel("Localidade", "Local de onde eu vim",    (float) -45.886938233999615 , (float) -23.179439339999607 ));
-        points.add(new LocationModel("Localidade", "Onde vim parar",    (float) -45.886938233999615 , (float) -23.179439339999607 ));
-        points.add(new LocationModel("Localidade", "Local importante",    (float) -45.886938233999615 , (float) -23.179439339999607 ));
-        points.add(new LocationModel("Localidade", "Ponto de Referência",    (float) -45.886938233999615 , (float) -23.179439339999607 ));
-        points.add(new LocationModel("Localidade", "Local importante",    (float) -45.879505966999595 , (float) -23.193259803999588 ));
+        // Insere os pontos em um veto TODO: COMENTADO POR CLAYTON, VERIFICAR SE PRECISA RETIRAR O COMENTÁRIO OU REMOVER DO CÓDIGO
+        //List<LocationModel> points = new ArrayList<LocationModel>();
+        //points.add(new LocationModel("BA","Poço","BP","Localidade", "Restaurante Mexicano",        (float) -45.886938233999615 , (float) -23.179439339999607 ));
+        //points.add(new LocationModel("SP","Poço","BP","Localidade", "Comemoração", (float) -45.8871903839996   , (float) -23.179239600999626 ));
+        //points.add(new LocationModel("BA","Poço","BP","Localidade", "teste",                                      (float) -45.891551633505351 , (float) -23.169872112666045 ));
+        //points.add(new LocationModel("SP","Poço","BP","Localidade", "Atuação",    (float) -45.900516162999622 , (float) -23.157171200999588 ));
+        //points.add(new LocationModel("SP","Poço","BP","Localidade", "Ponto de encontro",    (float) -45.893566406999639 , (float) -23.249376388999639 ));
+        //points.add(new LocationModel("SP","Poço","BP","Localidade", "Ponto de encontro 2",    (float) -45.86094854099963  , (float) -23.205829497999613 ));
+        //points.add(new LocationModel("SP","Poço","BP","Localidade", "Nasci aqui",    (float) -45.886938233999615 , (float) -23.179439339999607 ));
+        //points.add(new LocationModel("SP","Poço","BP","Localidade", "Ponte de referência 2",                                 (float) -45.886938233999615 , (float) -23.179439339999607 ));
+        //points.add(new LocationModel("SP","Poço","BP","Localidade", "Local de onde eu vim",    (float) -45.886938233999615 , (float) -23.179439339999607 ));
+        //points.add(new LocationModel("SP","Poço","BP","Localidade", "Onde vim parar",    (float) -45.886938233999615 , (float) -23.179439339999607 ));
+        //points.add(new LocationModel("BA","Poço","BP","Localidade", "Local importante",    (float) -45.886938233999615 , (float) -23.179439339999607 ));
+        //points.add(new LocationModel("BA","Poço","BP","Localidade", "Ponto de Referência",    (float) -45.886938233999615 , (float) -23.179439339999607 ));
+        //points.add(new LocationModel("BA","Poço","BP","Localidade", "Local importante",    (float) -45.879505966999595 , (float) -23.193259803999588 ));
         //points.add(new LocationModel("Localidade", "Sou natural de Belo Horizonte e me mude",    (float) -45.881199586999628 , (float) -23.195392134999615 ));
 
+        // Para cada ponto, insere no mapa e no banco
+        /*for (LocationModel point : points) {
+
+            AppManager.map.addMapObject(point.getMarker());
+            dao.insert(point.getUf(), point.getType(), point.getContext(), point.getTitle(), point.getDesc(),point.getLon(), point.getLat() );
+        }*/
+    }
+
+    public void InserDB(List<LocationModel> points) {
+
+        // Insere os pontos em um veto TODO: COMENTADO POR CLAYTON, VERIFICAR SE PRECISA RETIRAR O COMENTÁRIO OU REMOVER DO CÓDIGO
         // Para cada ponto, insere no mapa e no banco
         for (LocationModel point : points) {
 
             AppManager.map.addMapObject(point.getMarker());
-            dao.insert(point.getTitle(), point.getDesc(),point.getLon(), point.getLat() );
+            dao.insert(point.getUf(), point.getType(), point.getContext(), point.getTitle(), point.getDesc(), point.getDate(), point.getLon(), point.getLat() );
         }
     }
 }

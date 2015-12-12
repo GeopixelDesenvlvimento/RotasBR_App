@@ -10,6 +10,9 @@ import android.widget.TextView;
 import com.here.android.mpa.common.GeoPosition;
 import com.here.android.mpa.common.Image;
 import com.here.android.mpa.guidance.NavigationManager;
+import com.here.android.mpa.guidance.VoiceCatalog;
+import com.here.android.mpa.guidance.VoicePackage;
+import com.here.android.mpa.guidance.VoiceSkin;
 import com.here.android.mpa.mapping.Map;
 import com.here.android.mpa.routing.Maneuver;
 import com.here.android.mpa.routing.Route;
@@ -20,6 +23,7 @@ import com.petro.navigator.misc.Utils;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
+import java.util.List;
 
 /**
  *
@@ -162,18 +166,24 @@ public class Navigation {
      */
     public void start() {
 
-        /**
-         * ATENÇÃO: As duas linhas a seguir são responsáveis por iniciar a navegação. A primeira linha é responsável pelo funcionamento da aplicaçao em produção,
-         * A sgunda linha é repsonsável pela simulação, e deve ser utilizada somente em desenvovimento
-         */
-        NavigationManager.Error navigationError = AppManager.navigationManager.startNavigation(AppManager.routeGeometry.getRoute());
-        //NavigationManager.Error navigationError = AppManager.navigationManager.simulate(AppManager.routeGeometry.getRoute(), 20);
 
         // Adiciona alguns listeners para captura de eventos como novas instruções, alerta de velocidade (VELOCIDADE AMARELA)
         AppManager.navigationManager.addNavigationManagerEventListener(new WeakReference<NavigationManager.NavigationManagerEventListener>(navigationListener));
         AppManager.navigationManager.addNewInstructionEventListener(new WeakReference<NavigationManager.NewInstructionEventListener>(newInstrictionListener));
         AppManager.navigationManager.addSpeedWarningListener(new WeakReference<NavigationManager.SpeedWarningListener>(speedWarningListener));
         AppManager.navigationManager.addPositionListener(new WeakReference<NavigationManager.PositionListener>(positionListener));
+        AppManager.navigationManager.addNewInstructionEventListener(
+                new WeakReference<NavigationManager.NewInstructionEventListener>(instructListener));
+
+        /**
+         * ATENÇÃO: As duas linhas a seguir são responsáveis por iniciar a navegação. A primeira linha é responsável pelo funcionamento da aplicaçao em produção,
+         * A sgunda linha é repsonsável pela simulação, e deve ser utilizada somente em desenvovimento
+         */
+        //NavigationManager.Error navigationError = AppManager.navigationManager.startNavigation(AppManager.routeGeometry.getRoute());
+
+        NavigationManager.Error navigationError = AppManager.navigationManager.simulate(AppManager.routeGeometry.getRoute(), 20);
+        AppManager.navigationManager.setVoiceSkin(VoiceCatalog.getInstance().getLocalVoiceSkin(207));
+        //NavigationManager.Error navigationError = AppManager.navigationManager.simulate(AppManager.routeGeometry.getRoute(), 20);
 
         // Valida se ao inicializar a navegação ocorreu alogum erro.
         if (navigationError == NavigationManager.Error.NONE) {
@@ -195,6 +205,48 @@ public class Navigation {
                 AppManager.map.getPositionIndicator().setMarker(image);
 
             } catch (IOException e) { e.printStackTrace(); }
+
+
+            /*try {
+                Integer id = 201;
+                if (!VoiceCatalog.getInstance().isLocalVoiceSkin(id)) {
+                    final long finalId = id;
+                    VoiceCatalog.getInstance().downloadVoice(id, new VoiceCatalog.OnDownloadDoneListener() {
+                        @Override
+                        public void onDownloadDone(VoiceCatalog.Error error) {
+                            if (error == VoiceCatalog.Error.NONE) {
+                                //voice skin download successful
+
+                                //Toast.makeText(mActivity.getApplicationContext(), "Voice skin download successful.", Toast.LENGTH_LONG).show();
+
+                                // set the voice skin for use by navigation manager
+                                if (VoiceCatalog.getInstance().getLocalVoiceSkin(finalId) != null) {
+                                    AppManager.navigationManager.setVoiceSkin(VoiceCatalog.getInstance().getLocalVoiceSkin(finalId));
+                                } else {
+                                    //Toast.makeText(mActivity.getApplicationContext(), "Navi manager set voice skin error.", Toast.LENGTH_LONG).show();
+                                }
+
+                            } else {
+                                //Toast.makeText(mActivity.getApplicationContext(), "Voice skin download error.", Toast.LENGTH_LONG).show();
+                            }
+
+                        }
+                    });
+                } else {
+                    // set the voice skin for use by navigation manager
+                    if (VoiceCatalog.getInstance().getLocalVoiceSkin(id) != null) {
+                        AppManager.navigationManager.setVoiceSkin(VoiceCatalog.getInstance().getLocalVoiceSkin(id));
+                    } else {
+
+                        //Toast.makeText(mActivity.getApplicationContext(), "Navi manager set voice skin error.", Toast.LENGTH_LONG).show();
+                    }
+                }
+
+            }catch (Exception errordd)
+            {
+                Utils.showError(null, "sdf");
+            }*/
+
         }
     }
 
@@ -219,6 +271,29 @@ public class Navigation {
         int image = Utils.getImgFromIcon(maneuver.getIcon());
         Drawable drawable = AppManager.app.getResources().getDrawable(image);
         navigationNextImg.setImageDrawable(drawable);
+
+        /*VoiceCatalog voiceCatalog = VoiceCatalog.getInstance();
+        List<VoicePackage> voicePackages = voiceCatalog.getCatalogList();
+        List<VoiceSkin> voiceSkins = voiceCatalog.getLocalVoiceSkins();
+
+        long id = -1;
+        // select
+        for (VoicePackage pacote : voicePackages) {
+            if (pacote.getMarcCode().compareToIgnoreCase("eng") == 0) {
+                if (pacote.isTts()) {
+                    id = pacote.getId();
+                    break;
+                }
+            }
+        }
+
+        try {
+            // set the voice skin for use by navigation manager
+            AppManager.navigationManager.setVoiceSkin(voiceCatalog.getLocalVoiceSkin(0));
+        }catch (Exception erro)
+        {
+            Utils.showError(null, erro.getMessage());
+        }*/
     }
 
     /**
@@ -281,6 +356,16 @@ public class Navigation {
         @Override
         public void onPositionUpdated(GeoPosition loc) {
 
+            loc.getCoordinate();
+            loc.getHeading();
+            loc.getSpeed();
+
+            // also remaining time and distance can be
+            // fetched from navigation manager
+            AppManager.navigationManager.getTimeToArrival(true,
+                    Route.TrafficPenaltyMode.DISABLED);
+            AppManager.navigationManager.getDestinationDistance();
+
             // Caso a navegaçao esteja em execução
             if (AppManager.navigationManager.getRunningState() == NavigationManager.NavigationState.RUNNING) {
 
@@ -290,7 +375,7 @@ public class Navigation {
 
                         // Atualiza a atual velocidade do veículo
                         //todo: remover a multiplicaçao por 4
-                        navigationSpeed.setText(String.valueOf(Math.round(loc.getSpeed() * 4)));
+                        navigationSpeed.setText(String.valueOf(Math.round((loc.getSpeed() * 4) * 0.9)));
 
                         // Atualiza os dados de estatísticas e manobras
                         updateNextManeuver();
@@ -323,6 +408,17 @@ public class Navigation {
             // Em velocidade normal, a cor é padrão
             super.onSpeedExceededEnd(s, v);
             navigationSpeed.setTextColor(AppManager.app.getResources().getColor(R.color.colorAccent));
+        }
+    };
+
+    private NavigationManager.NewInstructionEventListener instructListener
+            = new NavigationManager.NewInstructionEventListener() {
+
+        @Override
+        public void onNewInstructionEvent() {
+            // Interpret and present the Maneuver object as it contains
+            // turn by turn navigation instructions for the user.
+            AppManager.navigationManager.getNextManeuver();
         }
     };
 

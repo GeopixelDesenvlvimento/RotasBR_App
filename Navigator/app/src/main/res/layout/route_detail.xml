@@ -11,7 +11,7 @@
     android:paddingTop="@dimen/default_paddingTop"
 
     android:layout_width="match_parent"
-    android:layout_height="130dp"
+    android:layout_height="145dp"
 
     android:backgroundTintMode="src_over"
     android:backgroundTint="@color/colorPrimary"

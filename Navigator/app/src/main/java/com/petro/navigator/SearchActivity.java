@@ -10,9 +10,12 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ListView;
 
+import com.petro.navigator.controller.Location;
+import com.petro.navigator.misc.Utils;
 import com.petro.navigator.model.LocationModel;
 
 import java.util.ArrayList;
@@ -41,34 +44,55 @@ public class SearchActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-        // Inicialização padrão do construtor
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_search);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        try {
+            // Inicialização padrão do construtor
+            super.onCreate(savedInstanceState);
+            setContentView(R.layout.activity_search);
+            Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+            setSupportActionBar(toolbar);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        // Controle list view onde os itens serão renderizados
-        listView = (ListView) findViewById(R.id.list_view);
+            String stateValue = this.getIntent().getStringExtra("sValue");
+            String typeValue = this.getIntent().getStringExtra("tValue");
+            String contentValue = this.getIntent().getStringExtra("cValue");
+            String idValue = this.getIntent().getStringExtra("eValue");
 
-        // Preenche a lista com os itens do banco de dados
-        // Acessado via variável global all
-        fill(AppManager.location.all());
+            // Controle list view onde os itens serão renderizados
+            listView = (ListView) findViewById(R.id.list_view);
 
-        // Seta o listener para o campo de texto
-        searchText = (EditText) findViewById(R.id.inputSearch);
-        searchText.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void onTextChanged(CharSequence charSequence, int arg1, int arg2, int arg3) {
+            AppManager.app = this;
+            if(AppManager.location == null)
+                AppManager.location = new Location(this, false);
 
-                // Ao digitar o texto, um like é executado no banco de dados, e o resultado é renderizado na lista
-                fill(AppManager.location.like(charSequence.toString()));
+            // Preenche a lista com os itens do banco de dados
+            // Acessado via variável global all
+            if ((stateValue != null && !stateValue.isEmpty()) || (typeValue != null && !typeValue.isEmpty()) || (contentValue != null && !contentValue.isEmpty()) || (idValue != null && !idValue.isEmpty())) {
+                fill(AppManager.location.likeMoreFields(stateValue, typeValue, contentValue, idValue));
+            } else {
+                fill(AppManager.location.all());
             }
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-            @Override
-            public void afterTextChanged(Editable s) {}
-        });
+
+            // Seta o listener para o campo de texto
+            searchText = (EditText) findViewById(R.id.inputSearch);
+            searchText.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void onTextChanged(CharSequence charSequence, int arg1, int arg2, int arg3) {
+
+                    // Ao digitar o texto, um like é executado no banco de dados, e o resultado é renderizado na lista
+                    fill(AppManager.location.like(charSequence.toString()));
+                }
+
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+                }
+            });
+        }catch (Exception error){
+            //Utils.showError(this, error.getMessage());
+        }
     }
 
     /**
@@ -77,33 +101,53 @@ public class SearchActivity extends AppCompatActivity {
      */
     private void fill(final List<LocationModel> locations){
 
-        // Itens a serem renderizados
-        String items[] = new String[locations.size()];
+        try {
+            // Itens a serem renderizados
+            String items[] = new String[locations.size()];
 
-        // Insere os itens da lista no arry
-        for (LocationModel location : locations)
-            items[locations.indexOf(location)] = location.getDesc();
-
-        // Limpa a lista
-        listView.setAdapter(null);
-
-        // Cria o adapter para a lista
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.list_item_detail, R.id.product_name, items);
-
-        // Atualiza a lista  e informa um callback para cada item clicado nela
-        listView.setAdapter(adapter);
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
-
+            //Se os retorno da lista de POI'S for maior que 1 então exibe o CheckBox para 'Selecionar Todos'
+            if (locations.size() > 1) {
+                CheckBox chkAll = (CheckBox) findViewById(R.id.chkAll);
+                chkAll.setVisibility(View.VISIBLE);
+                AppManager.locationsListView = locations;
+            } else if (locations.size() == 1) {
                 // Pega a locaidade, seta o item como selecionado e retorna
-                LocationModel location = locations.get(position);
-
-                listView.setItemChecked(position, true);
-
+                LocationModel location = locations.get(0);
+                AppManager.locationsListView = locations;
                 sendData(location);
             }
-        });
+
+            // Insere os itens da lista no arry
+            for (LocationModel location : locations) {
+                items[locations.indexOf(location)] = location.getDesc();
+                AppManager.location.addMarkerMap(location);
+            }
+
+            // Limpa a lista
+            listView.setAdapter(null);
+
+            // Cria o adapter para a lista
+            ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.list_item_detail, R.id.product_name, items);
+
+            // Atualiza a lista  e informa um callback para cada item clicado nela
+            listView.setAdapter(adapter);
+            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
+
+                    // Pega a locaidade, seta o item como selecionado e retorna
+                    LocationModel location = locations.get(position);
+
+                    listView.setItemChecked(position, true);
+
+                    sendData(location);
+                    //TODO:QUANDO FOR PRA CHECAR TODOS AI DESCOMENTA AQUI
+                    //sendDataActivity(location);
+                }
+            });
+        }catch (Exception error){
+            //Utils.showError(this, error.getMessage());
+        }
     }
 
     /**
@@ -112,10 +156,43 @@ public class SearchActivity extends AppCompatActivity {
      */
     private void sendData(LocationModel location){
 
-        // iia a intei, seta resultado e finaliza a viewi
-        Intent output = new Intent();
-        output.putExtra(MainActivity.SEARCH_DATA, location.getDesc() );
-        setResult(RESULT_OK, output);
-        finish();
+        try {
+            // iia a intei, seta resultado e finaliza a viewi
+            Intent output = new Intent();
+            output.putExtra(MainActivity.SEARCH_DATA, location.getDesc() );
+            setResult(RESULT_OK, output);
+            finish();
+        }catch (Exception error){
+            //Utils.showError(this, error.getMessage());
+        }
+
+    }
+
+    private void sendDataActivity(LocationModel location){
+
+        try {
+            // iia a intei, seta resultado e finaliza a viewi
+            Intent intent = new Intent(this, MainActivity.class);
+            intent.putExtra(MainActivity.SEARCH_DATA, location.getDesc());
+            startActivity(intent);
+            finish();
+        }catch (Exception error){
+            //Utils.showError(this, error.getMessage());
+        }
+    }
+
+    public void itemClicked(View v) {
+        try {
+            //code to check if this checkbox is checked!
+            CheckBox checkBox = (CheckBox) v;
+            if (checkBox.isChecked()) {
+                // iia a intei, seta resultado e finaliza a viewi
+                Intent intent = new Intent(this, MainActivity.class);
+                intent.putExtra("all", "true");
+                startActivity(intent);
+            }
+        }catch (Exception error){
+            //Utils.showError(this, error.getMessage());
+        }
     }
 }

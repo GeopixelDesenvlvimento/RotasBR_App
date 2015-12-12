@@ -6,10 +6,11 @@
     android:paddingTop="8dp"
     android:paddingBottom="8dp">
 
-    <ImageView
+    <!--<ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/pin16"/>
+        android:visibility="invisible"
+        android:src="@drawable/pin16"/> -->
 
     <!-- Product Name
     <ProgressBar

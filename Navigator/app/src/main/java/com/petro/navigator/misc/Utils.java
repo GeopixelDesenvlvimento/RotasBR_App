@@ -1,12 +1,18 @@
 package com.petro.navigator.misc;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.net.ConnectivityManager;
+import android.support.v7.app.AlertDialog;
 
 import com.here.android.mpa.routing.Maneuver;
 import com.petro.navigator.AppManager;
 import com.petro.navigator.R;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -47,6 +53,24 @@ public class Utils {
                 .setContentText(message)
                 .setConfirmText("Ok")
                 .show();
+    }
+
+    public static void showExit(Context context){
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setMessage("Tem certeza que deseja sair?")
+                .setCancelable(false)
+                .setPositiveButton("Sim", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        android.os.Process.killProcess(android.os.Process.myPid());
+                    }
+                })
+                .setNegativeButton("Não", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                    }
+                });
+        AlertDialog alert = builder.create();
+        alert.show();
     }
 
     /**
@@ -119,7 +143,7 @@ public class Utils {
         long curr = new Date().getTime();
 
         //todo: remover (remove 2 horas da hora atual)
-        curr = curr - ((3600 * 2) * 1000);
+        curr = curr - ((3600 * 3) * 1000);
 
         long mili = seconds * 1000;
         Date date = new Date(curr + mili);
@@ -155,6 +179,32 @@ public class Utils {
         double number = ((double)temp)/Math.pow(10 , round);
 
         return Double.toString(number);
+    }
+
+    /**
+     * Retorna a String do InputStream
+     * @param ists InputStream
+     * @return String do InputStream
+     */
+    public static String convertinputStreamToString(InputStream ists)
+            throws IOException {
+        if (ists != null) {
+            StringBuilder sb = new StringBuilder();
+            String line;
+
+            try {
+                BufferedReader r1 = new BufferedReader(new InputStreamReader(
+                        ists, "UTF-8"));
+                while ((line = r1.readLine()) != null) {
+                    sb.append(line);
+                }
+            } finally {
+                ists.close();
+            }
+            return sb.toString();
+        } else {
+            return "";
+        }
     }
 
     /**

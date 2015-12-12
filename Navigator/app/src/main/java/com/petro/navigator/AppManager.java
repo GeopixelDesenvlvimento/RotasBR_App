@@ -3,6 +3,7 @@ package com.petro.navigator;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
+import android.media.AudioManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -26,6 +27,7 @@ import com.petro.navigator.controller.Navigation;
 import com.petro.navigator.controller.Position;
 import com.petro.navigator.controller.Routing;
 import com.petro.navigator.misc.Utils;
+import com.petro.navigator.model.LocationModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,6 +48,7 @@ public class AppManager {
     public static Map map = null; // objeto mapa sdk here
     public static MapFragment mapFragment = null; // fragmento do mapa da activity principal
     public static MapLoader mapLoader  = null; // loader é responsável pelo gestão dos pacotes de mapa offline
+    public static List<LocationModel> locationsListView = null; // lista de locais da pesquisa de POIS.
 
     // Localizaçao: elementos relacionados
     public static Location location; // classe de gestão das localizações (POIs)
@@ -54,6 +57,8 @@ public class AppManager {
     // Navegação: elementos relacionados
     public static Navigation navigation; // classe de gestão e operação das features de navegação (turn-by-turn). start, stop, reroute, etc.
     public static NavigationManager navigationManager; // lib da HERE de navegação, utilizada na classe controller.Navigation
+
+    public static AudioManager audioManager; // lib da HERE de navegação, utilizada na classe controller.Navigation
 
     // Roteirização: elementos relacionados
     public static Routing routing; // classe de gestão e operação das features de roteirização (routing, travel-time, distance, etc)

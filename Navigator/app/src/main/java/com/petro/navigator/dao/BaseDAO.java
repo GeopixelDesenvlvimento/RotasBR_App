@@ -149,4 +149,144 @@ public abstract class BaseDAO {
 
         return cursor;
     }
+
+    public Cursor likeMoreFields(List<Field> fields, String ValueFieldS, String ValueFieldT, String ValueFieldC, String ValueFieldID){
+
+        db = dbManager.getReadableDatabase();
+        String fieldStr = "";
+
+        for(Field field : fields)
+            fieldStr += (fieldStr.equals("") ? "" : ",") + field.name;
+
+        String select = "SELECT " + fieldStr+ " FROM " + TABLENAME + " WHERE ";
+                if(!ValueFieldS.isEmpty() && !ValueFieldS.equals("Selecione Estado"))
+                    select+= " UF = '" + ValueFieldS.toString() + "' and ";
+                if(!ValueFieldT.isEmpty() && !ValueFieldT.equals("Selecione Classe"))
+                    select+= " TYPE = '" + ValueFieldT.toString() + "' and ";
+                if(!ValueFieldC.isEmpty() && !ValueFieldC.equals("Selecione Contexto"))
+                    select+= " CONTEXT = '" + ValueFieldC.toString() + "' and ";
+                if(!ValueFieldID.isEmpty())
+                    select+= " DESCRICAO LIKE '%" + ValueFieldID.toString() + "%' and ";
+
+        select+= " 1=1";
+        Log.d("SELECT" , select);
+
+        Cursor cursor = db.rawQuery(select, null);
+        if (cursor != null) cursor.moveToFirst();
+
+        db.close();
+
+        return cursor;
+    }
+
+    public Cursor likeMoreFieldsCount(String ValueFieldS, String ValueFieldT, String ValueFieldC, String ValueFieldID){
+
+        db = dbManager.getReadableDatabase();
+        String fieldStr = "";
+
+        String select = "SELECT COUNT(ID) FROM " + TABLENAME + " WHERE ";
+        if(!ValueFieldS.isEmpty() && !ValueFieldS.equals("Selecione Estado"))
+            select+= " UF = '" + ValueFieldS.toString() + "' and ";
+        if(!ValueFieldT.isEmpty() && !ValueFieldT.equals("Selecione Classe"))
+            select+= " TYPE = '" + ValueFieldT.toString() + "' and ";
+        if(!ValueFieldC.isEmpty() && !ValueFieldC.equals("Selecione Contexto"))
+            select+= " CONTEXT = '" + ValueFieldC.toString() + "' and ";
+        if(!ValueFieldID.isEmpty())
+            select+= " DESCRICAO LIKE '%" + ValueFieldID.toString() + "%' and ";
+
+        select+= " 1=1";
+        Log.d("SELECT" , select);
+
+        Cursor cursor = db.rawQuery(select, null);
+        if (cursor != null) cursor.moveToFirst();
+
+        db.close();
+
+        return cursor;
+    }
+
+
+    /**
+     * Retorna o último valor da Tabela POI cadastrada
+     * @param equals Campo para o like com valor
+     * @return Cursor como resultado
+     */
+    public Cursor lastValue(Field equals){
+
+        db = dbManager.getReadableDatabase();
+        String fieldStr = "";
+
+        String select = "SELECT ID, TITULO, DESCRICAO, UF, CONTEXT, TYPE, VAL, LAT, LON FROM " + TABLENAME + " WHERE 1 = 1 ORDER BY " + equals.name + " DESC ";
+
+        Log.d("SELECT" , select);
+
+        Cursor cursor = db.rawQuery(select, null);
+        if (cursor != null) cursor.moveToFirst();
+
+        db.close();
+
+        return cursor;
+    }
+
+    /**
+     * Retorna o último valor da Tabela POI cadastrada
+     * @param whereClause Campo para o like com valor
+     * @return Cursor como resultado
+     */
+    public Cursor WhereClause(String whereClause, String field){
+
+        db = dbManager.getReadableDatabase();
+        String fieldStr = "";
+
+        String select = "SELECT ID, UF, TYPE, CONTEXT, TITULO, DESCRICAO, VAL, LAT, LON FROM " + TABLENAME + " WHERE " + whereClause + " GROUP BY " + field;
+
+        Log.d("SELECT" , select);
+
+        Cursor cursor = db.rawQuery(select, null);
+        if (cursor != null) cursor.moveToFirst();
+
+        db.close();
+
+        return cursor;
+    }
+
+    /**
+     * Realiza o like na tabela
+     * @param field Campo para o like com valor
+     * @return Cursor como resultado
+     */
+    public Cursor getValeuGroupBy(String field){
+
+        db = dbManager.getReadableDatabase();
+
+        String select = "SELECT ID, UF, TYPE, CONTEXT, TITULO, DESCRICAO, VAL, LAT, LON FROM " + TABLENAME + " GROUP BY " + field;
+
+        Log.d("SELECT" , select);
+
+        Cursor cursor = db.rawQuery(select, null);
+        if (cursor != null) cursor.moveToFirst();
+
+        db.close();
+
+        return cursor;
+    }
+
+    /**
+     * Realiza o like na tabela
+     * @param whereClause Campo para o like com valor
+     * @return Cursor como resultado
+     */
+    public void deleteAll(String whereClause){
+
+        db = dbManager.getReadableDatabase();
+
+        String delete = "DELETE FROM " + TABLENAME + " WHERE " + whereClause;
+
+        Log.d("DELETE" , delete);
+
+        Cursor cursor = db.rawQuery(delete, null);
+        if (cursor != null) cursor.moveToFirst();
+
+        db.close();
+    }
 }

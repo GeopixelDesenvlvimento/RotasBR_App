@@ -208,7 +208,7 @@ public class Routing {
                 // Caso exista algum problema, esconde o loading e os detalhes da rota e uma mensagem é exibida
                 AppManager.hideRouteLoading();
                 AppManager.routing.hideDetail();
-                Utils.showError(AppManager.app, "Ocorreu um problema na gerçaão da rota!");
+                Utils.showError(AppManager.app, "Ocorreu um problema na geração da rota!");
             }
 
         }

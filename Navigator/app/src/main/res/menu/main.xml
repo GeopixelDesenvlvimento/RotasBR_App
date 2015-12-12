@@ -23,5 +23,6 @@
     <item android:id="@+id/action_search"
         android:title="@string/toolbar_search"
         android:icon="@drawable/search32"
+        android:visible="false"
         app:showAsAction="always" />
 </menu>

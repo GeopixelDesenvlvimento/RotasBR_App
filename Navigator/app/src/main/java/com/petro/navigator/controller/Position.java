@@ -1,5 +1,6 @@
 package com.petro.navigator.controller;
 
+import com.here.android.mpa.common.GeoCoordinate;
 import com.here.android.mpa.common.GeoPosition;
 import com.here.android.mpa.common.PositioningManager;
 import com.here.android.mpa.common.RoadElement;
@@ -56,6 +57,8 @@ public class Position {
      */
     public Position(){
         // Cria uma nova instância do positioning manager, informa o listener responsável por manter atualizada a psição e inicia o monitoramento.
+        AppManager.map.setCenter(new GeoCoordinate(-12.9968881,
+                -38.4671059), Map.Animation.NONE);//Centraliza o mapa inicial em Salvado, onde está a Sede da Empresa.
         AppManager.positioningManager = PositioningManager.getInstance();
         AppManager.positioningManager.addListener(new WeakReference<PositioningManager.OnPositionChangedListener>(positionListener));
         AppManager.positioningManager.start(PositioningManager.LocationMethod.GPS_NETWORK);

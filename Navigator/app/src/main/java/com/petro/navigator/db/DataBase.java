@@ -25,6 +25,10 @@ public class DataBase extends SQLiteOpenHelper {
                 "ID integer primary key autoincrement," +
                 "TITULO text," +
                 "DESCRICAO text," +
+                "UF text," +
+                "CONTEXT text," +
+                "TYPE text," +
+                "VAL integer," +
                 "LAT real," +
                 "LON real)";
         db.execSQL(sql);

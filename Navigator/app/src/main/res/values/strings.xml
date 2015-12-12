@@ -5,12 +5,12 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="action_settings">Settings</string>
-    <string name="title_activity_search">Pesquisar Localidades</string>
+    <string name="title_activity_search">Pesquisar POIS</string>
     <string name="title_activity_location">LocationActivity</string>
 
-    <string name="search_placeholder">Localidades</string>
+    <string name="search_placeholder">POIS</string>
 
-    <string name="title_activity_search_results">Localidades</string>
+    <string name="title_activity_search_results">POIS</string>
     <string name="title_activity_searchable">SearchableActivity</string>
 
     <string name="toolbar_state_search">Procurar por Estado</string>
@@ -27,16 +27,14 @@
     <string name="title_activity_poi">PoiActivity</string>
 
     <string-array name="state_array">
-        <item>Apple</item>
-        <item>Banana</item>
-        <item>Mango</item>
-        <item>Grapes</item>
-        <item>Orange</item>
-        <item>Strawberry</item>
-        <item>Peach</item>
+        <item>Estado</item>
+        <item>SP</item>
+        <item>RJ</item>
+        <item>BA</item>
     </string-array>
 
     <string-array name="type_array">
+        <item>Classe</item>
         <item>Poço</item>
         <item>Poste</item>
         <item>Emergência</item>
@@ -44,7 +42,9 @@
     </string-array>
 
     <string-array name="content_array">
+        <item>Contexto</item>
         <item>FB</item>
+        <item>BP</item>
     </string-array>
 
 </resources>
