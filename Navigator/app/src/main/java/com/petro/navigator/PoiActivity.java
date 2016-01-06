@@ -43,7 +43,7 @@ public class PoiActivity extends AppCompatActivity {
             setSupportActionBar(toolbar);
 
             //Seta Titu
-            setTitle("Buscar Pois");
+            setTitle("Buscar POI Petrobras");
             //Carregando os Spinners da Activity
             loadSipnner("", "uf");
         }catch (Exception error){

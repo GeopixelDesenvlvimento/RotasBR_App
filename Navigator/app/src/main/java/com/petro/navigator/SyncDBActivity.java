@@ -52,7 +52,7 @@ public class SyncDBActivity extends AppCompatActivity {
         setContentView(R.layout.activity_sync_db);
 
         //Seta Titulo da Activity
-        setTitle("Atualizar Banco de Dados");
+        setTitle("Atualizar feições Petrobras");
         self = this;
         AppManager.app = this;
         AppManager.setState(AppManager.STATE.Waiting);
@@ -63,8 +63,6 @@ public class SyncDBActivity extends AppCompatActivity {
         }catch (Exception error){
 
         }
-
-        //loadSipnner();
     }
 
     /**
@@ -100,8 +98,6 @@ public class SyncDBActivity extends AppCompatActivity {
             }
 
             //Pega o último resgistro do banco de dados TODO:Precisa melhorar o código, está aqui só pra apresentação no momento, mudar na versão final
-            //List<LocationModel> listLocationModels = location.lastValue();
-            //LocationModel locteste;
             int Validade = 0;
 
             if (stateValue != "" && !stateValue.equals("Selecione Estado"))
@@ -114,11 +110,6 @@ public class SyncDBActivity extends AppCompatActivity {
                 whereClause = whereClause.substring(0, whereClause.length() - 3);
 
             location.deleteAll(whereClause);
-
-            //if( listLocationModels.size() > 0 ) {
-            //locteste = listLocationModels.get(0);
-            //Validade = locteste.getDate();
-            //}
 
             //Verifica se a Atualização pra fazer9
             verifyJSON(Validade, stateValue, typeValue, contentValue);

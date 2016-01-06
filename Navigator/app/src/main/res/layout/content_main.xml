@@ -4,12 +4,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto" android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior" tools:showIn="@layout/app_bar_main"
+    android:screenOrientation="portrait"
     tools:context=".MainActivity">
 
     <!-- Map Fragment embedded with the map object -->
     <fragment
         class="com.here.android.mpa.mapping.MapFragment"
         android:id="@+id/mapfragment"
+        android:screenOrientation="portrait"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 

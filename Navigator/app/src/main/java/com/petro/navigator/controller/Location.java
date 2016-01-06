@@ -3,6 +3,7 @@ package com.petro.navigator.controller;
 import android.content.Context;
 import android.database.Cursor;
 
+import com.here.android.mpa.common.GeoCoordinate;
 import com.here.android.mpa.common.ViewObject;
 import com.here.android.mpa.mapping.Map;
 import com.here.android.mpa.mapping.MapGesture;
@@ -99,8 +100,11 @@ public class Location implements Serializable {
         // Valida se o GPS já capturou alguma localização, e caso tenhas capturado, realiza o cálculo da rota, caso contrário, exibe uma mensagem para aguardar o GDP
         if (AppManager.currentPosition != null)
             AppManager.routing.calc();
-        else
-            Utils.showAlert(AppManager.app, "Aguarde o sinal do GPS!");
+        else {
+            AppManager.currentPosition = new GeoCoordinate(-12.9968881, -38.4671059); //Deixa posição atual como sede da empresa na Bahia.
+            AppManager.routing.calc();
+        }
+            //Utils.showAlert(AppManager.app, "Aguarde o sinal do GPS!");
     }
     public void set (LocationModel location) { set(location.getMarker()); }
 
@@ -271,8 +275,7 @@ public class Location implements Serializable {
         // Insere os pontos em um veto TODO: COMENTADO POR CLAYTON, VERIFICAR SE PRECISA RETIRAR O COMENTÁRIO OU REMOVER DO CÓDIGO
         // Para cada ponto, insere no mapa e no banco
         for (LocationModel point : points) {
-
-            AppManager.map.addMapObject(point.getMarker());
+            //AppManager.map.addMapObject(point.getMarker());
             dao.insert(point.getUf(), point.getType(), point.getContext(), point.getTitle(), point.getDesc(), point.getDate(), point.getLon(), point.getLat() );
         }
     }

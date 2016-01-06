@@ -109,11 +109,30 @@ public class Utils {
      */
     public static String secondsToDateLabel(int seconds){
 
-        int mili = seconds * 1000;
+        /*int mili = seconds * 1000;
         Date date = new Date(mili);
         SimpleDateFormat formatter = new SimpleDateFormat(seconds >= 3600 ? "HH 'h' mm 'min'" : "mm 'min'", Locale.ENGLISH);
-        formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
-        return formatter.format(date);
+        formatter.setTimeZone(TimeZone.getTimeZone("America/Sao_Paulo"));
+        return formatter.format(date);*/
+
+        try {
+            int segundos = seconds;
+            int segundo = segundos % 60;
+            int minutos = segundos / 60;
+            int minuto = minutos % 60;
+            int hora = minutos / 60;
+
+            if (hora > 24) {
+                long dias = (long)Math.floor(hora / 24);
+                int rest = hora % 24;
+                return String.format("%02dd %02dh %02dm", dias, rest, minuto);
+            }
+
+            return String.format("%02dh %02dm", hora, minuto);
+        }catch (Exception error){
+            String teste = error.getMessage();
+            return "";
+        }
     }
 
     /**
@@ -126,7 +145,7 @@ public class Utils {
         int mili = seconds * 1000;
         Date date = new Date(mili);
         SimpleDateFormat formatter = new SimpleDateFormat("mm", Locale.ENGLISH);
-        formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
+        formatter.setTimeZone(TimeZone.getTimeZone("America/Sao_Paulo"));
         return formatter.format(date);
     }
 
@@ -138,13 +157,13 @@ public class Utils {
     public static String secondsPlusNowLabel(int seconds){
 
         SimpleDateFormat formatter = new SimpleDateFormat("HH:mm", Locale.ENGLISH);
-        formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
+        formatter.setTimeZone(TimeZone.getTimeZone("America/Sao_Paulo"));
 
-        long curr = new Date().getTime();
-
-        //todo: remover (remove 2 horas da hora atual)
-        curr = curr - ((3600 * 3) * 1000);
-
+        Date now = new Date();
+        long curr = now.getTime();
+        //long curr = TimeZone.getDefault().getOffset(now.getTime());
+        //curr = curr - ((3600) * 1000);
+        //curr = curr - ((3600) * 1000);
         long mili = seconds * 1000;
         Date date = new Date(curr + mili);
 

@@ -15,6 +15,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.CheckBox;
@@ -55,7 +56,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     // Variáveis estáticas para gestão da consulta
     public final static int SEARCH_DATA_CODE = 13;
     public final static String SEARCH_DATA = "com.petro.navigator.SearchActivity";
-    private Intent intentAux = null;
 
     /**
      * Método de implementação
@@ -91,7 +91,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             //Inicializa a navigation view e o fragmento de mapa
             NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
             navigationView.setNavigationItemSelectedListener(this);
-            intentAux = this.getIntent();
 
             //Liga GPS
             String provider = Settings.Secure.getString(getContentResolver(), Settings.Secure.LOCATION_PROVIDERS_ALLOWED);
@@ -101,6 +100,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
 
             AppManager.mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.mapfragment);
+
+            /*AppManager.mapFragment.setOnTouchListener(new View.OnTouchListener() {
+
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    Integer ev = event.getAction();
+                    return true;
+                }
+            });*/
+
             AppManager.mapFragment.init(new OnEngineInitListener() {
                 @Override
                 public void onEngineInitializationCompleted(OnEngineInitListener.Error error) {
@@ -139,7 +148,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         AppManager.navigation = new Navigation(true);
 
                         //Se os retorno da lista de POI'S for maior que 1 então exibe o CheckBox para 'Selecionar Todos'
-                        //List<LocationModel> locationsListView = (List<LocationModel>) intentAux.getSerializableExtra("all");
                         List<LocationModel> locationsListView = AppManager.locationsListView;
                         if (locationsListView != null) {
 
@@ -224,7 +232,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public void onBackPressed() {
-        try {
+        Utils.showExit(this);
+        /*try {
             DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
             if (drawer.isDrawerOpen(GravityCompat.START)) {
                 drawer.closeDrawer(GravityCompat.START);
@@ -233,7 +242,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         }catch (Exception error){
             //Utils.showError(this, error.getMessage());
-        }
+        }*/
     }
 
     @Override
@@ -280,6 +289,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 AppManager.setState(AppManager.STATE.Searching);
                 return false;
             } else if (id == R.id.action_gps) {
+                if(AppManager.map != null) {
+                    AppManager.map.setOrientation(0, Map.Animation.LINEAR);
+                }
+
                 AppManager.position.zoomToCurrentPosition();
             }
 
@@ -301,9 +314,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         try {
             int id = item.getItemId();
 
-            if (id == R.id.nav_sync) {
-                //Toast.makeText(this, "NÃO IMPLEMENTADO", Toast.LENGTH_SHORT);
+            if (id == R.id.action_sync) {
+                // Valida se existe uma conexão de internet ativa, e só redireciona para o sync manager caso exista.
+                if (Utils.isOnline()) {
 
+                    Intent syncActivityIntent = new Intent(this, SyncActivity.class);
+                    startActivity(syncActivityIntent);
+                } else
+                    Utils.showAlert(this, "E necessario ter uma conexão de internet ativa!");
+
+                AppManager.setState(AppManager.STATE.Sync);
+                return false;
+            } else if (id == R.id.nav_sync) {
                 Intent syncDBActivityIntent = new Intent(this, SyncDBActivity.class);
                 startActivity(syncDBActivityIntent);
 
@@ -314,6 +336,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                 Intent poiActivityIntent = new Intent(this, PoiActivity.class);
                 startActivity(poiActivityIntent);
+            }else if (id == R.id.nav_search_pois_here) {
+                Utils.showAlert(this, "Funcionalidade desabilitada"); //TODO:Adicionar código que irá chamar as outras páginas no futuro
+            }else if (id == R.id.create_pois_favs) {
+                Utils.showAlert(this, "Funcionalidade desabilitada"); //TODO:Adicionar código que irá chamar as outras páginas no futuro
+            }else if (id == R.id.nav_search_pois_favs) {
+                Utils.showAlert(this, "Funcionalidade desabilitada"); //TODO:Adicionar código que irá chamar as outras páginas no futuro
             }
 
             DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -329,12 +357,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         boolean result = VoiceCatalog.getInstance().downloadCatalog(new VoiceCatalog.OnDownloadDoneListener(){
             @Override
             public void onDownloadDone(VoiceCatalog.Error error) {
-                Toast.makeText(getApplicationContext(), "onDownloadDone: " + error.toString(), Toast.LENGTH_LONG).show();
+                //Toast.makeText(getApplicationContext(), "onDownloadDone: " + error.toString(), Toast.LENGTH_LONG).show();
 
                 // Get the list of voice packages from the voice catalog list
                 List<VoicePackage> voicePackages = VoiceCatalog.getInstance().getCatalogList();
                 long id = -1;
-// select
+                // select
                 for (VoicePackage pacote : voicePackages) {
                     String language = pacote.getMarcCode();
                     if (language.compareToIgnoreCase("por") == 0) {
@@ -352,8 +380,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             public void onDownloadDone(VoiceCatalog.Error error) {
                                 if (error == VoiceCatalog.Error.NONE) {
                                     //voice skin download successful
-
-                                    //Toast.makeText(mActivity.getApplicationContext(), "Voice skin download successful.", Toast.LENGTH_LONG).show();
 
                                     // set the voice skin for use by navigation manager
                                     if (VoiceCatalog.getInstance().getLocalVoiceSkin(finalId) != null) {
@@ -384,10 +410,5 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 }
 
             }});
-        if (result) {
-            Toast.makeText(this, "Successfully requested catalog", Toast.LENGTH_SHORT).show();
-        } else {
-            Toast.makeText(this, "Failed to request catalog", Toast.LENGTH_LONG).show();
-        }
     }
 }

@@ -10,11 +10,13 @@
         app:showAsAction="never" />
    -->
 
+    <!--
     <item android:id="@+id/action_sync"
         android:title="@string/toolbar_sync"
         android:icon="@drawable/download_32"
+        android:visible="false"
         app:showAsAction="always" />
-
+-->
     <item android:id="@+id/action_gps"
         android:title="@string/toolbar_gps"
         android:icon="@drawable/gps32"

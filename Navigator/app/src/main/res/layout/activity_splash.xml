@@ -34,13 +34,20 @@
                 android:layout_height="wrap_content"
                 android:gravity="end"
                 android:text="@string/app_name"
-                android:textSize="@dimen/font_xxxl"
+                android:textSize="@dimen/font_xxl"
                 android:textStyle="bold"
                 android:layout_gravity="top|bottom"/>
-
         </LinearLayout>
 
     </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="100dp"
+        android:text="Navegador Terrestre da Petrobras"
+        android:textSize="@dimen/font_s"
+        android:layout_marginTop="320dp" />
 
     <ImageView
         android:layout_width="wrap_content"

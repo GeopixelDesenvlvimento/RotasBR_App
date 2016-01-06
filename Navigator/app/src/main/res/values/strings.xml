@@ -1,32 +1,32 @@
 <resources>
-    <string name="app_name">Rotas BR</string>
+    <string name="app_name">Petrobras Copiloto</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="action_settings">Settings</string>
-    <string name="title_activity_search">Pesquisar POIS</string>
+    <string name="title_activity_search">Buscar POI Petrobras</string>
     <string name="title_activity_location">LocationActivity</string>
 
-    <string name="search_placeholder">POIS</string>
+    <string name="search_placeholder">Buscar POI Petrobras</string>
 
-    <string name="title_activity_search_results">POIS</string>
+    <string name="title_activity_search_results">Buscar POI Petrobras</string>
     <string name="title_activity_searchable">SearchableActivity</string>
 
     <string name="toolbar_state_search">Procurar por Estado</string>
-    <string name="toolbar_sync">Sincronizar</string>
+    <string name="toolbar_sync">Gerenciar mapas off-line</string>
     <string name="toolbar_gps">Posição atual</string>
     <string name="toolbar_search">Pesquise por Localidades</string>
 
     <string name="title_activity_sync">SyncActivity</string>
-    <string name="title_activity_splash">Rotas BR</string>
+    <string name="title_activity_splash">Petrobras Copiloto</string>
 
     <string name="map_package_installed">INSTALADO</string>
     <string name="map_package_installing">INSTALANDO</string>
     <string name="map_package_not_installed">NÃO INSTALADO</string>
     <string name="title_activity_poi">PoiActivity</string>
 
-    <string-array name="state_array">
+    <!--<string-array name="state_array">
         <item>Estado</item>
         <item>SP</item>
         <item>RJ</item>
@@ -45,6 +45,6 @@
         <item>Contexto</item>
         <item>FB</item>
         <item>BP</item>
-    </string-array>
+    </string-array>-->
 
 </resources>

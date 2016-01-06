@@ -3,6 +3,7 @@ package com.petro.navigator.controller;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.graphics.drawable.Drawable;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -166,7 +167,6 @@ public class Navigation {
      */
     public void start() {
 
-
         // Adiciona alguns listeners para captura de eventos como novas instruções, alerta de velocidade (VELOCIDADE AMARELA)
         AppManager.navigationManager.addNavigationManagerEventListener(new WeakReference<NavigationManager.NavigationManagerEventListener>(navigationListener));
         AppManager.navigationManager.addNewInstructionEventListener(new WeakReference<NavigationManager.NewInstructionEventListener>(newInstrictionListener));
@@ -179,9 +179,9 @@ public class Navigation {
          * ATENÇÃO: As duas linhas a seguir são responsáveis por iniciar a navegação. A primeira linha é responsável pelo funcionamento da aplicaçao em produção,
          * A sgunda linha é repsonsável pela simulação, e deve ser utilizada somente em desenvovimento
          */
-        //NavigationManager.Error navigationError = AppManager.navigationManager.startNavigation(AppManager.routeGeometry.getRoute());
+        NavigationManager.Error navigationError = AppManager.navigationManager.startNavigation(AppManager.routeGeometry.getRoute());
 
-        NavigationManager.Error navigationError = AppManager.navigationManager.simulate(AppManager.routeGeometry.getRoute(), 20);
+        //NavigationManager.Error navigationError = AppManager.navigationManager.simulate(AppManager.routeGeometry.getRoute(), 20);
         AppManager.navigationManager.setVoiceSkin(VoiceCatalog.getInstance().getLocalVoiceSkin(207));
         //NavigationManager.Error navigationError = AppManager.navigationManager.simulate(AppManager.routeGeometry.getRoute(), 20);
 
@@ -205,48 +205,6 @@ public class Navigation {
                 AppManager.map.getPositionIndicator().setMarker(image);
 
             } catch (IOException e) { e.printStackTrace(); }
-
-
-            /*try {
-                Integer id = 201;
-                if (!VoiceCatalog.getInstance().isLocalVoiceSkin(id)) {
-                    final long finalId = id;
-                    VoiceCatalog.getInstance().downloadVoice(id, new VoiceCatalog.OnDownloadDoneListener() {
-                        @Override
-                        public void onDownloadDone(VoiceCatalog.Error error) {
-                            if (error == VoiceCatalog.Error.NONE) {
-                                //voice skin download successful
-
-                                //Toast.makeText(mActivity.getApplicationContext(), "Voice skin download successful.", Toast.LENGTH_LONG).show();
-
-                                // set the voice skin for use by navigation manager
-                                if (VoiceCatalog.getInstance().getLocalVoiceSkin(finalId) != null) {
-                                    AppManager.navigationManager.setVoiceSkin(VoiceCatalog.getInstance().getLocalVoiceSkin(finalId));
-                                } else {
-                                    //Toast.makeText(mActivity.getApplicationContext(), "Navi manager set voice skin error.", Toast.LENGTH_LONG).show();
-                                }
-
-                            } else {
-                                //Toast.makeText(mActivity.getApplicationContext(), "Voice skin download error.", Toast.LENGTH_LONG).show();
-                            }
-
-                        }
-                    });
-                } else {
-                    // set the voice skin for use by navigation manager
-                    if (VoiceCatalog.getInstance().getLocalVoiceSkin(id) != null) {
-                        AppManager.navigationManager.setVoiceSkin(VoiceCatalog.getInstance().getLocalVoiceSkin(id));
-                    } else {
-
-                        //Toast.makeText(mActivity.getApplicationContext(), "Navi manager set voice skin error.", Toast.LENGTH_LONG).show();
-                    }
-                }
-
-            }catch (Exception errordd)
-            {
-                Utils.showError(null, "sdf");
-            }*/
-
         }
     }
 
@@ -258,7 +216,7 @@ public class Navigation {
         // Pega a próxima manobra
         Maneuver maneuver = AppManager.navigationManager.getNextManeuver();
 
-        // Calcula a distância. Caso a distância seja maior que 1000 metros, então é exibida em quilômetros, caso contrário, em metros sem caasa decimal
+        // Calcula a distância. Caso a distância seja maior que 1000 metros, então é exibida em quilômetros, caso contrário, em metros sem casa decimal
         double distance = AppManager.navigationManager.getNextManeuverDistance();
         String distanceLabel = distance >= 1000 ? Utils.metersToQuilometersLabel(distance, 1) + " km" : String.valueOf(Math.round(distance)) + " m";
 
@@ -271,29 +229,6 @@ public class Navigation {
         int image = Utils.getImgFromIcon(maneuver.getIcon());
         Drawable drawable = AppManager.app.getResources().getDrawable(image);
         navigationNextImg.setImageDrawable(drawable);
-
-        /*VoiceCatalog voiceCatalog = VoiceCatalog.getInstance();
-        List<VoicePackage> voicePackages = voiceCatalog.getCatalogList();
-        List<VoiceSkin> voiceSkins = voiceCatalog.getLocalVoiceSkins();
-
-        long id = -1;
-        // select
-        for (VoicePackage pacote : voicePackages) {
-            if (pacote.getMarcCode().compareToIgnoreCase("eng") == 0) {
-                if (pacote.isTts()) {
-                    id = pacote.getId();
-                    break;
-                }
-            }
-        }
-
-        try {
-            // set the voice skin for use by navigation manager
-            AppManager.navigationManager.setVoiceSkin(voiceCatalog.getLocalVoiceSkin(0));
-        }catch (Exception erro)
-        {
-            Utils.showError(null, erro.getMessage());
-        }*/
     }
 
     /**
@@ -356,6 +291,7 @@ public class Navigation {
         @Override
         public void onPositionUpdated(GeoPosition loc) {
 
+            //Necessário para funcionar comandos por voz
             loc.getCoordinate();
             loc.getHeading();
             loc.getSpeed();

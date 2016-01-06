@@ -36,7 +36,7 @@ public class SyncActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        setTitle("Sincronismo");
+        setTitle("Gerenciar mapas off-line");
 
         self = this;
 

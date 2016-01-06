@@ -1,17 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <group android:checkableBehavior="single">
 
         <item
             android:id="@+id/nav_sync"
             android:icon="@android:drawable/ic_menu_gallery"
-            android:title="Atualizar Banco de dados" />
+            android:title="Atualizar feições Petrobras" />
+
+        <item android:id="@+id/action_sync"
+            android:title="@string/toolbar_sync"
+            android:icon="@drawable/download_32"
+            app:showAsAction="always" />
 
         <item
             android:id="@+id/nav_search_pois"
             android:icon="@android:drawable/ic_menu_directions"
-            android:title="Buscar Pois" />
+            android:title="Buscar POI Petrobras" />
+
+        <item
+            android:id="@+id/nav_search_pois_here"
+            android:icon="@android:drawable/ic_menu_directions"
+            android:title="Buscar POI HERE" />
+
+        <item
+            android:id="@+id/create_pois_favs"
+            android:icon="@android:drawable/ic_menu_add"
+            android:title="Criar POI Favoritos" />
+
+        <item
+            android:id="@+id/nav_search_pois_favs"
+            android:icon="@android:drawable/ic_menu_search"
+            android:title="Buscar Endereços" />
 
         <item
             android:id="@+id/nav_exit"
