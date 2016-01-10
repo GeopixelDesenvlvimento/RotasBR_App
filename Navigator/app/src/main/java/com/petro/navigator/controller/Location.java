@@ -2,6 +2,7 @@ package com.petro.navigator.controller;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.PointF;
 
 import com.here.android.mpa.common.GeoCoordinate;
 import com.here.android.mpa.common.ViewObject;
@@ -28,6 +29,7 @@ public class Location implements Serializable {
     // Variáveis
     private LocationDAO dao; // DATA ACCESS OBJECT da classe Location
     private List<LocationModel> locations = new ArrayList<LocationModel>(); // Lista das localizações atuais, retornada pelo banco de dados
+    private Context currentContext = null;
 
     /**
      * Gesture Listener: responsável por capturar eventos relacionados a gestos no mapa, como a seleção de um MapMarker, por exemplo
@@ -50,6 +52,20 @@ public class Location implements Serializable {
             // return false to allow the map to handle this callback also
             return false;
         }
+
+        /**
+         * onLongPressEvent: responsável por capturar o evento quando o usuário seleciona um ponto no mapa por uma longa duração.
+         */
+        @Override
+        public boolean onLongPressEvent(PointF p) {
+
+            AppManager.positionPress = AppManager.map.pixelToGeo(p); //Deixa posição atual como sede da empresa na Bahia.
+            float lat1 = (float) AppManager.positionPress.getLatitude();
+            float long1 = (float) AppManager.positionPress.getLongitude();
+            Utils.showQuestion(currentContext, "Deseja adicionar esse ponto como referência?", "Ponto?");
+            return false;
+        }
+
     };
 
     /**
@@ -59,6 +75,7 @@ public class Location implements Serializable {
      */
     public Location(Context context, boolean mockData) {
 
+        currentContext = context;
         // Adiciona o Gesture Listener ao map fragmento
         AppManager.mapFragment.getMapGesture().addOnGestureListener(gestureListener);
 

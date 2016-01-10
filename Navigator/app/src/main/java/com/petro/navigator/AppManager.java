@@ -71,6 +71,10 @@ public class AppManager {
     public static Position position; // classe de gestão do posicionamento do dispositivo
     public static PositioningManager positioningManager; // Lib da HERE de posicionamento, utilizada para menter o posicionamento do dispositivo atualizado.
     public static GeoCoordinate currentPosition; // atual localização dos dispositivo, capturado pela classe PositioningManager
+    public static GeoCoordinate positionPress; // posição atual que foi pressionada para adicionar como ponto no mapa.
+    public static LocationModel positionListTo; // posição atual que foi pressionada para adicionar como ponto no mapa.
+    public static LocationModel positionListFrom; // posição atual que foi pressionada para adicionar como ponto no mapa.
+    public static LocationModel positionAddPress; // último ponto que foi adicionado pelo usuário manualmente.
     public static boolean currentPositionZoomTo = false;
 
     // Sincronismo: elemtnso relacionados

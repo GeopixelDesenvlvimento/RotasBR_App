@@ -1,122 +1,114 @@
 package com.petro.navigator;
 
 import android.content.Intent;
-import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.ArrayAdapter;
 
 import com.petro.navigator.controller.Location;
+import com.petro.navigator.dao.LocationDAO;
 import com.petro.navigator.misc.Utils;
 import com.petro.navigator.model.LocationModel;
 
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
-
-public class PoiActivity extends AppCompatActivity {
-
-    // Variáveis estáticas para gestão da consulta
-    public final static int SEARCH_DATA_CODE = 13;
-    public final static String SEARCH_DATA = "com.petro.navigator.SearchActivity";
-    private String ufSelected = null;
-    private String classSelected = null;
+public class AddPoiActivity extends AppCompatActivity {
 
     Spinner state;
     Spinner type;
     Spinner content;
     EditText eText;
 
+    private String ufSelected = null;
+    private String classSelected = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        try {
-            super.onCreate(savedInstanceState);
-            setContentView(R.layout.activity_poi);
-            Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-            setSupportActionBar(toolbar);
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_add_poi);
+        //Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        //setSupportActionBar(toolbar);
 
-            //Seta Title
-            setTitle("Buscar POI Petrobras");
-            //Carregando os Spinners da Activity
-            loadSipnner("", "uf");
-        }catch (Exception error){
-            Utils.showError(this, error.getMessage());
-        }
+        //Seta Title
+        setTitle("Adicionar Ponto Petrobras");
+        //Carregando os Spinners da Activity
+        loadSipnner("", "uf");
     }
 
     /**
-     * Evento de clique do botão Buscar Pois
+     * Evento de clique do botão Cancelar Pois
      */
-    public void searchPoi(View v) throws IOException {
+    public void CancelAddPoi(View v) throws IOException {
 
         try {
-
-            String stateValue = "Selecione Estado";
-            String typeValue = "Selecione Classe";
-            String contentValue = "Selecione Contexto";
-
-            Spinner stateS = (Spinner) findViewById(R.id.spinner);
-            if(stateS.getSelectedItem() != null) {
-                stateValue = stateS.getSelectedItem().toString();
-            }
-
-            Spinner stateT = (Spinner) findViewById(R.id.spinner2);
-            if(stateT.getSelectedItem() != null) {
-                typeValue = stateT.getSelectedItem().toString();
-            }
-
-            Spinner stateC = (Spinner) findViewById(R.id.spinner3);
-            if(stateC.getSelectedItem() != null) {
-                contentValue = stateC.getSelectedItem().toString();
-            }
-
-            EditText edText = (EditText) findViewById(R.id.eTID);
-            String edTextValue = edText.getText().toString();
-
-            Integer sizeList = AppManager.location.likeMoreFieldsCount(stateValue, typeValue, contentValue, edTextValue);
-
-            if (sizeList > 100) {
-                Utils.showAlert(this, "Resultado ultrapassa 100 registros, por favor realize uma nova busca com mais filtros");
-            } else {
-                Intent searchActivityIntent = new Intent(this, SearchActivity.class);
-                searchActivityIntent.putExtra("sValue", stateValue);
-                searchActivityIntent.putExtra("tValue", typeValue);
-                searchActivityIntent.putExtra("cValue", contentValue);
-                searchActivityIntent.putExtra("eValue", edTextValue);
-                startActivityForResult(searchActivityIntent, SEARCH_DATA_CODE);
-
-                AppManager.setState(AppManager.STATE.Searching);
-            }
+            Intent intent = new Intent();
+            intent.setClass(AddPoiActivity.this, MainActivity.class);
+            startActivity(intent);
+            AppManager.setState(AppManager.STATE.Searching);
         }catch (Exception error){
             //Utils.showError(this, error.getMessage());
         }
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    /**
+     * Evento de clique do botão Adicionar Pois
+     */
+    public void AddPoi(View v) throws IOException {
 
         try {
-            if(data != null){
-                //Pega a descriação do poi e busca ele na base
-                String desc = data.getStringExtra(this.SEARCH_DATA);
-                LocationModel location = AppManager.location.get(desc);
-                // Seta a localização no mapa e gera a rota
-                AppManager.location.zoomTo(location);
-                AppManager.location.set(location);
-                AppManager.setState(AppManager.STATE.Waiting);
-                // Devolve as informações da MainActivity
-                Intent output = new Intent();
-                output.putExtra(MainActivity.SEARCH_DATA, location.getDesc());
-                setResult(RESULT_OK, output);
-                finish();
+
+            if(AppManager.positionPress != null){
+
+                String stateValue = "Selecione Estado";
+                String typeValue = "Selecione Classe";
+                String contentValue = "Selecione Contexto";
+
+                Spinner stateS = (Spinner) findViewById(R.id.spinnerAdd);
+                if(stateS.getSelectedItem() != null) {
+                    stateValue = stateS.getSelectedItem().toString();
+                }
+
+                Spinner stateT = (Spinner) findViewById(R.id.spinner2Add);
+                if(stateT.getSelectedItem() != null) {
+                    typeValue = stateT.getSelectedItem().toString();
+                }
+
+                Spinner stateC = (Spinner) findViewById(R.id.spinner3Add);
+                if(stateC.getSelectedItem() != null) {
+                    contentValue = stateC.getSelectedItem().toString();
+                }
+
+                EditText edText = (EditText) findViewById(R.id.eTIDAdd);
+                String edTextValue = edText.getText().toString();
+
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+                String currentDate = sdf.format(new Date());
+                //String val = (String)dateNow.getYear();
+
+                List<LocationModel> points = new ArrayList<LocationModel>();
+                points.add(new LocationModel(stateValue, typeValue, contentValue, edTextValue, edTextValue,  Integer.parseInt(currentDate),(float)AppManager.positionPress.getLongitude(),
+                        (float)AppManager.positionPress.getLatitude()));
+
+                // Inicializa o DAO
+                LocationDAO dao = new LocationDAO(AddPoiActivity.this);
+
+                // Para cada ponto, insere no mapa e no banco
+                for (LocationModel point : points) {
+                    dao.insert(point.getUf(), point.getType(), point.getContext(), point.getTitle(), point.getDesc(), point.getDate(), point.getLon(), point.getLat() );
+                    AppManager.positionAddPress = point;
+                }
             }
+            Utils.showSuccesAddPoint(AddPoiActivity.this, "Ponto Adicionado com Sucesso!");
         }catch (Exception error){
             //Utils.showError(this, error.getMessage());
         }
@@ -130,7 +122,7 @@ public class PoiActivity extends AppCompatActivity {
         try {
             //Pega o último resgistro do banco de dados TODO:Precisa melhorar o código, está aqui só pra apresentação no momento, mudar na versão final
             if(AppManager.location == null)
-                AppManager.location = new Location(PoiActivity.this, false);
+                AppManager.location = new Location(AddPoiActivity.this, false);
 
             switch (typeClass){
                 case "uf":
@@ -149,7 +141,7 @@ public class PoiActivity extends AppCompatActivity {
                             .setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
                     //Spinner Estado
-                    state = (Spinner) findViewById(R.id.spinner);
+                    state = (Spinner) findViewById(R.id.spinnerAdd);
                     state.setAdapter(dataAdapter);
 
                     state.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -185,7 +177,7 @@ public class PoiActivity extends AppCompatActivity {
                     dataAdapterTypeOneField
                             .setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                     //Spinner Tipo
-                    type = (Spinner) findViewById(R.id.spinner2);
+                    type = (Spinner) findViewById(R.id.spinner2Add);
                     type.setAdapter(dataAdapterTypeOneField);
 
 
@@ -199,7 +191,7 @@ public class PoiActivity extends AppCompatActivity {
                     dataAdapterContextOneField
                             .setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
-                    content = (Spinner) findViewById(R.id.spinner3);
+                    content = (Spinner) findViewById(R.id.spinner3Add);
                     content.setAdapter(dataAdapterContextOneField);
 
                     break;
@@ -217,7 +209,7 @@ public class PoiActivity extends AppCompatActivity {
                     dataAdapterType
                             .setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                     //Spinner Tipo
-                    type = (Spinner) findViewById(R.id.spinner2);
+                    type = (Spinner) findViewById(R.id.spinner2Add);
                     type.setAdapter(dataAdapterType);
 
                     type.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -249,7 +241,7 @@ public class PoiActivity extends AppCompatActivity {
                     }
 
                     //Spinner Contexto
-                    content = (Spinner) findViewById(R.id.spinner3);
+                    content = (Spinner) findViewById(R.id.spinner3Add);
 
                     ArrayAdapter<String> dataAdapterContext = new ArrayAdapter<String>(this,
                             android.R.layout.simple_spinner_item, namesSpinnersContext);
@@ -265,5 +257,4 @@ public class PoiActivity extends AppCompatActivity {
             Utils.showError(this, error.getMessage());
         }
     }
-
 }

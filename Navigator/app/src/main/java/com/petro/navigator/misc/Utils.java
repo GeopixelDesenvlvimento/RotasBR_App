@@ -2,12 +2,18 @@ package com.petro.navigator.misc;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.support.v7.app.AlertDialog;
 
 import com.here.android.mpa.routing.Maneuver;
+import com.petro.navigator.AddPoiActivity;
 import com.petro.navigator.AppManager;
+import com.petro.navigator.MainActivity;
 import com.petro.navigator.R;
+import com.petro.navigator.SearchActivity;
+import com.petro.navigator.SplashActivity;
+import com.petro.navigator.SyncActivity;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -55,6 +61,21 @@ public class Utils {
                 .show();
     }
 
+    public static void showSuccesAddPoint(final Context context, String message){
+        new SweetAlertDialog(context, SweetAlertDialog.SUCCESS_TYPE)
+                .setTitleText("Parabéns!")
+                .setContentText(message)
+                .setConfirmText("Ok")
+                .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                    @Override
+                    public void onClick(SweetAlertDialog sweetAlertDialog) {
+                        Intent mainActivity = new Intent(context, MainActivity.class);
+                        context.startActivity(mainActivity);
+                    }
+                })
+                .show();
+    }
+
     public static void showExit(Context context){
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setMessage("Tem certeza que deseja sair?")
@@ -71,6 +92,30 @@ public class Utils {
                 });
         AlertDialog alert = builder.create();
         alert.show();
+    }
+
+    public static void showQuestion(final Context context, String message, String title){
+        new SweetAlertDialog(context, SweetAlertDialog.WARNING_TYPE)
+                .setTitleText(title)
+                .setContentText(message)
+                .setCancelText("Não")
+                .setConfirmText("Sim")
+                .showCancelButton(true)
+                .setCancelClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                    @Override
+                    public void onClick(SweetAlertDialog sDialog) {
+                        sDialog.cancel();
+                    }
+                })
+                .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                    @Override
+                    public void onClick(SweetAlertDialog sDialog) {
+                        sDialog.cancel();
+                        Intent addPoiActivityIntent = new Intent(context, AddPoiActivity.class);
+                        context.startActivity(addPoiActivityIntent);
+                    }
+                })
+                .show();
     }
 
     /**

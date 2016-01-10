@@ -1,6 +1,8 @@
 package com.petro.navigator;
 
+import android.app.LauncherActivity;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -34,6 +36,8 @@ public class SearchActivity extends AppCompatActivity {
     // Constroles
     private ListView listView;
     private EditText searchText;
+    private Integer oldPosition = -1;
+    LocationModel locationPosition = null;
 
     // ArrayList for Listview
     ArrayList<HashMap<String, String>> productList;
@@ -59,6 +63,9 @@ public class SearchActivity extends AppCompatActivity {
 
             // Controle list view onde os itens serão renderizados
             listView = (ListView) findViewById(R.id.list_view);
+            listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+
+            listView.setSelector(R.drawable.my_selecter);
 
             AppManager.app = this;
             if(AppManager.location == null)
@@ -109,6 +116,13 @@ public class SearchActivity extends AppCompatActivity {
             if (locations.size() > 1) {
                 CheckBox chkAll = (CheckBox) findViewById(R.id.chkAll);
                 chkAll.setVisibility(View.VISIBLE);
+
+                CheckBox chkFrom = (CheckBox) findViewById(R.id.chkFrom);
+                chkFrom.setVisibility(View.VISIBLE);
+
+                CheckBox chkTo = (CheckBox) findViewById(R.id.chkTo);
+                chkTo.setVisibility(View.VISIBLE);
+
                 AppManager.locationsListView = locations;
             } else if (locations.size() == 1) {
                 // Pega a locaidade, seta o item como selecionado e retorna
@@ -120,7 +134,7 @@ public class SearchActivity extends AppCompatActivity {
             // Insere os itens da lista no arry
             for (LocationModel location : locations) {
                 items[locations.indexOf(location)] = location.getDesc();
-                AppManager.location.addMarkerMap(location);
+                //AppManager.location.addMarkerMap(location);
             }
 
             // Limpa a lista
@@ -135,18 +149,35 @@ public class SearchActivity extends AppCompatActivity {
                 @Override
                 public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
 
+                    CheckBox chkFrom = (CheckBox) findViewById(R.id.chkFrom);//Origem
+                    CheckBox chkTo = (CheckBox) findViewById(R.id.chkTo);//Destino
                     // Pega a locaidade, seta o item como selecionado e retorna
                     LocationModel location = locations.get(position);
-
                     listView.setItemChecked(position, true);
 
-                    sendData(location);
-                    //TODO:QUANDO FOR PRA CHECAR TODOS AI DESCOMENTA AQUI
-                    //sendDataActivity(location);
+                    //Verifica se o checkbox de Origem está checado
+                    if (chkFrom.isChecked()) {
+                        if (AppManager.positionListFrom == null) {
+                            //caso esteja e a posição de origem seja nula, ele adiciona a origem e avisa o usuário pra escolher um destino.
+                            AppManager.positionListFrom = location;
+                            Utils.showAlert(SearchActivity.this, "Por favor, selecione um destino");
+                        } else {
+                            //adiciona uma posição de destino e envia o trajeto para cálculo de navegação.
+                            AppManager.positionListTo = location;
+                            AppManager.location.addMarkerMap(AppManager.positionListFrom);
+                            AppManager.location.addMarkerMap(location);
+                            sendData(location);
+                        }
+                    } else {
+                        AppManager.positionListTo = null;
+                        AppManager.positionListFrom = null;
+                        AppManager.location.addMarkerMap(location);
+                        sendData(location);
+                    }
                 }
             });
         }catch (Exception error){
-            //Utils.showError(this, error.getMessage());
+            Utils.showError(this, error.getMessage());
         }
     }
 
@@ -168,19 +199,6 @@ public class SearchActivity extends AppCompatActivity {
 
     }
 
-    private void sendDataActivity(LocationModel location){
-
-        try {
-            // iia a intei, seta resultado e finaliza a viewi
-            Intent intent = new Intent(this, MainActivity.class);
-            intent.putExtra(MainActivity.SEARCH_DATA, location.getDesc());
-            startActivity(intent);
-            finish();
-        }catch (Exception error){
-            //Utils.showError(this, error.getMessage());
-        }
-    }
-
     public void itemClicked(View v) {
         try {
             //code to check if this checkbox is checked!
@@ -191,6 +209,29 @@ public class SearchActivity extends AppCompatActivity {
                 intent.putExtra("all", "true");
                 startActivity(intent);
             }
+        }catch (Exception error){
+            //Utils.showError(this, error.getMessage());
+        }
+    }
+
+    public void itemFromClicked(View v) {
+        try {
+            //code to check if this checkbox is checked!
+            CheckBox checkBoxFrom = (CheckBox) v;//Origem
+            CheckBox chkTo = (CheckBox) findViewById(R.id.chkTo);//Destino
+            CheckBox chkAll = (CheckBox) findViewById(R.id.chkAll);//Selecionar Todos
+
+            if (checkBoxFrom.isChecked()) {
+                chkTo.setChecked(false);
+                chkAll.setEnabled(false);
+            }else{
+                chkAll.setEnabled(true);
+                chkTo.setChecked(true);
+
+                AppManager.positionListTo = null;
+                AppManager.positionListFrom = null;
+            }
+
         }catch (Exception error){
             //Utils.showError(this, error.getMessage());
         }

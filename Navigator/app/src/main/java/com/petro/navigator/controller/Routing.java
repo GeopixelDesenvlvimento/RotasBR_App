@@ -107,6 +107,14 @@ public class Routing {
      */
     public void calc(GeoCoordinate from, GeoCoordinate to){
 
+        //Caso possua coordenadas de Origem e Destino vindas da lista de pesquisa, ele altera o From e To para as novas coordenadas.
+        if(AppManager.positionListFrom != null && AppManager.positionListTo != null) {
+            from = (GeoCoordinate) AppManager.positionListFrom.getMarker().getCoordinate();
+            to = (GeoCoordinate) AppManager.positionListTo.getMarker().getCoordinate();
+            AppManager.positionListFrom = null;
+            AppManager.positionListTo = null;
+        }
+
         // Remove qualquer geometria de rota que exista no map
         AppManager.map.removeMapObject(AppManager.routeGeometry);
 

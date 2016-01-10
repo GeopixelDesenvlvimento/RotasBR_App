@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-
-
+    <drawable name="red_color">#FA032C</drawable>
+    <drawable name="blue_color">#00B6FF</drawable>
+    
     <!--<color name="colorPrimary">#4285F4</color>-->
     <color name="colorPrimary">#071028</color>
     <color name="colorPrimaryDark">#071028</color>

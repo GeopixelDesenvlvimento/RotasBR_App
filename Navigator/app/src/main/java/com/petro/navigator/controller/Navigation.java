@@ -179,9 +179,9 @@ public class Navigation {
          * ATENÇÃO: As duas linhas a seguir são responsáveis por iniciar a navegação. A primeira linha é responsável pelo funcionamento da aplicaçao em produção,
          * A sgunda linha é repsonsável pela simulação, e deve ser utilizada somente em desenvovimento
          */
-        NavigationManager.Error navigationError = AppManager.navigationManager.startNavigation(AppManager.routeGeometry.getRoute());
+        //NavigationManager.Error navigationError = AppManager.navigationManager.startNavigation(AppManager.routeGeometry.getRoute());
 
-        //NavigationManager.Error navigationError = AppManager.navigationManager.simulate(AppManager.routeGeometry.getRoute(), 20);
+        NavigationManager.Error navigationError = AppManager.navigationManager.simulate(AppManager.routeGeometry.getRoute(), 20);
         AppManager.navigationManager.setVoiceSkin(VoiceCatalog.getInstance().getLocalVoiceSkin(207));
         //NavigationManager.Error navigationError = AppManager.navigationManager.simulate(AppManager.routeGeometry.getRoute(), 20);
 
@@ -310,8 +310,7 @@ public class Navigation {
                     if (loc.isValid()) {
 
                         // Atualiza a atual velocidade do veículo
-                        //todo: remover a multiplicaçao por 4
-                        navigationSpeed.setText(String.valueOf(Math.round((loc.getSpeed() * 4) * 0.9)));
+                        navigationSpeed.setText(String.valueOf(Math.round((loc.getSpeed() * 3.6))));
 
                         // Atualiza os dados de estatísticas e manobras
                         updateNextManeuver();

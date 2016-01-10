@@ -100,16 +100,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
 
             AppManager.mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.mapfragment);
-
-            /*AppManager.mapFragment.setOnTouchListener(new View.OnTouchListener() {
-
-                @Override
-                public boolean onTouch(View v, MotionEvent event) {
-                    Integer ev = event.getAction();
-                    return true;
-                }
-            });*/
-
             AppManager.mapFragment.init(new OnEngineInitListener() {
                 @Override
                 public void onEngineInitializationCompleted(OnEngineInitListener.Error error) {
@@ -147,6 +137,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         AppManager.routing = new Routing(true);
                         AppManager.navigation = new Navigation(true);
 
+                        if(AppManager.positionAddPress != null){
+                            AppManager.location.addMarkerMap(AppManager.positionAddPress);
+                            AppManager.positionAddPress = null;
+                        }
+
                         //Se os retorno da lista de POI'S for maior que 1 então exibe o CheckBox para 'Selecionar Todos'
                         List<LocationModel> locationsListView = AppManager.locationsListView;
                         if (locationsListView != null) {
@@ -160,8 +155,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 }
 
                                 AppManager.map.setZoomLevel((AppManager.map.getMaxZoomLevel() + AppManager.map.getMinZoomLevel()) / 3);
+                                //AppManager.map.setZoomLevel((AppManager.map.getMaxZoomLevel() + AppManager.map.getMinZoomLevel()) / 2);
                             }
                         }
+
+                        // map fragment has been successfully initialized
+                        //AppManager.mapFragment.getMapGesture().addOnGestureListener(new );
 
                     } else
                         Utils.showError(MainActivity.this, "Não foi possível carregar o mapa!");
