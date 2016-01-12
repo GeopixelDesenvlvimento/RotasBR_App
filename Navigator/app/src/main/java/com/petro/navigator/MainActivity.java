@@ -146,7 +146,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         List<LocationModel> locationsListView = AppManager.locationsListView;
                         if (locationsListView != null) {
 
-                            if (locationsListView.size() > 0) {
+                            if (locationsListView.size() > 0 && AppManager.searcAllListItens == true) {
                                 // Insere os itens da lista no arry
                                 for (LocationModel location : locationsListView) {
                                     AppManager.location.zoomTo(location);
@@ -154,14 +154,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                     location.getMarker().showInfoBubble();
                                 }
 
+                                AppManager.searcAllListItens = false;
                                 AppManager.map.setZoomLevel((AppManager.map.getMaxZoomLevel() + AppManager.map.getMinZoomLevel()) / 3);
-                                //AppManager.map.setZoomLevel((AppManager.map.getMaxZoomLevel() + AppManager.map.getMinZoomLevel()) / 2);
                             }
                         }
-
-                        // map fragment has been successfully initialized
-                        //AppManager.mapFragment.getMapGesture().addOnGestureListener(new );
-
                     } else
                         Utils.showError(MainActivity.this, "Não foi possível carregar o mapa!");
                     downloadVoiceCatalog();
@@ -195,7 +191,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             if (AppManager.positioningManager != null)
                 AppManager.positioningManager.stop();
-
 
             PowerManager powerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
             PowerManager.WakeLock wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "no sleep");
@@ -231,7 +226,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public void onBackPressed() {
-        Utils.showExit(this);
+
+        if(AppManager.getState() == AppManager.STATE.Navigating || AppManager.getState() == AppManager.STATE.Routing) {
+            AppManager.setState(AppManager.STATE.Waiting); // state
+            AppManager.navigationManager.stop();
+            Intent intent = new Intent(this, MainActivity.class);
+            startActivity(intent);
+            super.onBackPressed();
+        } else {
+            Utils.showExit(this);
+        }
+
         /*try {
             DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
             if (drawer.isDrawerOpen(GravityCompat.START)) {

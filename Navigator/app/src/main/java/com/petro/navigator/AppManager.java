@@ -76,6 +76,7 @@ public class AppManager {
     public static LocationModel positionListFrom; // posição atual que foi pressionada para adicionar como ponto no mapa.
     public static LocationModel positionAddPress; // último ponto que foi adicionado pelo usuário manualmente.
     public static boolean currentPositionZoomTo = false;
+    public static boolean searcAllListItens = false;
 
     // Sincronismo: elemtnso relacionados
     // Componentes do item selecionado para download dos dados. Componentes não são alterados caso existe um sincronismo em admaaneto

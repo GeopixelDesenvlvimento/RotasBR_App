@@ -59,11 +59,15 @@ public class Location implements Serializable {
         @Override
         public boolean onLongPressEvent(PointF p) {
 
-            AppManager.positionPress = AppManager.map.pixelToGeo(p); //Deixa posição atual como sede da empresa na Bahia.
-            float lat1 = (float) AppManager.positionPress.getLatitude();
-            float long1 = (float) AppManager.positionPress.getLongitude();
-            Utils.showQuestion(currentContext, "Deseja adicionar esse ponto como referência?", "Ponto?");
-            return false;
+            try {
+                AppManager.positionPress = AppManager.map.pixelToGeo(p); //Deixa posição atual como sede da empresa na Bahia.
+                float lat1 = (float) AppManager.positionPress.getLatitude();
+                float long1 = (float) AppManager.positionPress.getLongitude();
+                Utils.showQuestion(currentContext, "Deseja adicionar esse ponto como referência?", "Ponto?");
+                return false;
+            }catch (Exception ex){
+                return false;
+            }
         }
 
     };

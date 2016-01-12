@@ -622,4 +622,9 @@ public class SyncDBActivity extends AppCompatActivity {
         }
         catch (JSONException e){ e.printStackTrace(); }
     }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+    }
 }

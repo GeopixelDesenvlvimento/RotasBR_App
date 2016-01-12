@@ -45,6 +45,11 @@ public class AddPoiActivity extends AppCompatActivity {
         loadSipnner("", "uf");
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+    }
+
     /**
      * Evento de clique do botão Cancelar Pois
      */
@@ -54,7 +59,7 @@ public class AddPoiActivity extends AppCompatActivity {
             Intent intent = new Intent();
             intent.setClass(AddPoiActivity.this, MainActivity.class);
             startActivity(intent);
-            AppManager.setState(AppManager.STATE.Searching);
+            AppManager.setState(AppManager.STATE.Waiting);
         }catch (Exception error){
             //Utils.showError(this, error.getMessage());
         }

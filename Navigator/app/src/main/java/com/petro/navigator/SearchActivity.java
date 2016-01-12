@@ -205,6 +205,7 @@ public class SearchActivity extends AppCompatActivity {
             CheckBox checkBox = (CheckBox) v;
             if (checkBox.isChecked()) {
                 // iia a intei, seta resultado e finaliza a viewi
+                AppManager.searcAllListItens = true;
                 Intent intent = new Intent(this, MainActivity.class);
                 intent.putExtra("all", "true");
                 startActivity(intent);
@@ -235,5 +236,10 @@ public class SearchActivity extends AppCompatActivity {
         }catch (Exception error){
             //Utils.showError(this, error.getMessage());
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
     }
 }

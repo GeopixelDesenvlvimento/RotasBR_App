@@ -110,7 +110,7 @@ public class PoiActivity extends AppCompatActivity {
                 // Seta a localização no mapa e gera a rota
                 AppManager.location.zoomTo(location);
                 AppManager.location.set(location);
-                AppManager.setState(AppManager.STATE.Waiting);
+
                 // Devolve as informações da MainActivity
                 Intent output = new Intent();
                 output.putExtra(MainActivity.SEARCH_DATA, location.getDesc());
@@ -264,6 +264,11 @@ public class PoiActivity extends AppCompatActivity {
         }catch (Exception error){
             Utils.showError(this, error.getMessage());
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
     }
 
 }

@@ -70,6 +70,7 @@ public class Utils {
                     @Override
                     public void onClick(SweetAlertDialog sweetAlertDialog) {
                         Intent mainActivity = new Intent(context, MainActivity.class);
+                        mainActivity.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         context.startActivity(mainActivity);
                     }
                 })
@@ -82,7 +83,12 @@ public class Utils {
                 .setCancelable(false)
                 .setPositiveButton("Sim", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        android.os.Process.killProcess(android.os.Process.myPid());
+                        try {
+                            android.os.Process.killProcess(android.os.Process.myPid());
+                        } catch (Exception ex) {
+                            android.os.Process.killProcess(id);
+                        }
+
                     }
                 })
                 .setNegativeButton("Não", new DialogInterface.OnClickListener() {
