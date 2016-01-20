@@ -202,10 +202,12 @@ public class AddPoiActivity extends AppCompatActivity {
                     break;
                 case "classe":
                     List<LocationModel> listLocationModelsType = AppManager.location.WhereClause(whereClause, "type");
-                    String[] namesSpinnersType = new String[listLocationModelsType.size() + 1];
+                    //String[] namesSpinnersType = new String[listLocationModelsType.size() + 1];
+                    String[] namesSpinnersType = new String[listLocationModelsType.size() + 2];
                     namesSpinnersType[0] = "Selecione Classe";
+                    namesSpinnersType[1] = "Outros";
                     for (int i = 0; i < listLocationModelsType.size(); i++) {
-                        namesSpinnersType[i + 1] = listLocationModelsType.get(i).getType(); //create array of name
+                        namesSpinnersType[i + 2] = listLocationModelsType.get(i).getType(); //create array of name
                     }
                     ArrayAdapter<String> dataAdapterType = new ArrayAdapter<String>(this,
                             android.R.layout.simple_spinner_item, namesSpinnersType);
@@ -238,23 +240,41 @@ public class AddPoiActivity extends AppCompatActivity {
                     });
                     break;
                 case "contexto":
-                    List<LocationModel> listLocationModelsContext = AppManager.location.WhereClause(whereClause, "context");
-                    String[] namesSpinnersContext = new String[listLocationModelsContext.size() + 1];
-                    namesSpinnersContext[0] = "Selecione Contexto";
-                    for (int i = 0; i < listLocationModelsContext.size(); i++) {
-                        namesSpinnersContext[i + 1] = listLocationModelsContext.get(i).getContext(); //create array of name
+
+                    Spinner stateT = (Spinner) findViewById(R.id.spinner2Add);
+                    if(stateT.getSelectedItem().toString().equals("Outros")){
+                        String[] namesSpinnersContext = new String[2];
+                        namesSpinnersContext[0] = "Selecione Contexto";
+                        namesSpinnersContext[1] = "Particular";
+                        //Spinner Contexto
+                        content = (Spinner) findViewById(R.id.spinner3Add);
+
+                        ArrayAdapter<String> dataAdapterContext = new ArrayAdapter<String>(this,
+                                android.R.layout.simple_spinner_item, namesSpinnersContext);
+
+                        // Drop down layout style - list view with radio button
+                        dataAdapterContext
+                                .setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                        content.setAdapter(dataAdapterContext);
+                    }else {
+                        List<LocationModel> listLocationModelsContext = AppManager.location.WhereClause(whereClause, "context");
+                        String[] namesSpinnersContext = new String[listLocationModelsContext.size() + 1];
+                        namesSpinnersContext[0] = "Selecione Contexto";
+                        for (int i = 0; i < listLocationModelsContext.size(); i++) {
+                            namesSpinnersContext[i + 1] = listLocationModelsContext.get(i).getContext(); //create array of name
+                        }
+
+                        //Spinner Contexto
+                        content = (Spinner) findViewById(R.id.spinner3Add);
+
+                        ArrayAdapter<String> dataAdapterContext = new ArrayAdapter<String>(this,
+                                android.R.layout.simple_spinner_item, namesSpinnersContext);
+
+                        // Drop down layout style - list view with radio button
+                        dataAdapterContext
+                                .setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                        content.setAdapter(dataAdapterContext);
                     }
-
-                    //Spinner Contexto
-                    content = (Spinner) findViewById(R.id.spinner3Add);
-
-                    ArrayAdapter<String> dataAdapterContext = new ArrayAdapter<String>(this,
-                            android.R.layout.simple_spinner_item, namesSpinnersContext);
-
-                    // Drop down layout style - list view with radio button
-                    dataAdapterContext
-                            .setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                    content.setAdapter(dataAdapterContext);
                     break;
             }
 

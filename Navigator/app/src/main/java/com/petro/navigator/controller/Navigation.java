@@ -179,11 +179,11 @@ public class Navigation {
          * ATENÇÃO: As duas linhas a seguir são responsáveis por iniciar a navegação. A primeira linha é responsável pelo funcionamento da aplicaçao em produção,
          * A sgunda linha é repsonsável pela simulação, e deve ser utilizada somente em desenvovimento
          */
-        //NavigationManager.Error navigationError = AppManager.navigationManager.startNavigation(AppManager.routeGeometry.getRoute());
+        NavigationManager.Error navigationError = AppManager.navigationManager.startNavigation(AppManager.routeGeometry.getRoute());
 
-        NavigationManager.Error navigationError = AppManager.navigationManager.simulate(AppManager.routeGeometry.getRoute(), 20);
-        AppManager.navigationManager.setVoiceSkin(VoiceCatalog.getInstance().getLocalVoiceSkin(207));
         //NavigationManager.Error navigationError = AppManager.navigationManager.simulate(AppManager.routeGeometry.getRoute(), 20);
+        AppManager.navigationManager.setVoiceSkin(VoiceCatalog.getInstance().getLocalVoiceSkin(207));
+        //NavigationManager.Error navigationError = AppManager.navigationManager.simulate(AppManager.routeGeometry.getRoute(), 50);
 
         // Valida se ao inicializar a navegação ocorreu alogum erro.
         if (navigationError == NavigationManager.Error.NONE) {
@@ -321,6 +321,7 @@ public class Navigation {
 
                         navigationArrival.setText(Utils.secondsPlusNowLabel(routeTta.getDuration()));
                         navigationMinsTo.setText(Utils.secondsToMinLabel(legTta.getDuration()));
+                        navigationMinsTo.setTextSize(18);
                     }
 
                 } catch(Exception e ){}

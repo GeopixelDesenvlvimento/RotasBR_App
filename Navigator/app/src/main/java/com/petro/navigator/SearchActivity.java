@@ -71,6 +71,11 @@ public class SearchActivity extends AppCompatActivity {
             if(AppManager.location == null)
                 AppManager.location = new Location(this, false);
 
+            if (AppManager.positionListFrom != null) {
+                CheckBox chkFrom = (CheckBox) findViewById(R.id.chkFrom);//Origem
+                chkFrom.setChecked(true);
+            }
+
             // Preenche a lista com os itens do banco de dados
             // Acessado via variável global all
             if ((stateValue != null && !stateValue.isEmpty()) || (typeValue != null && !typeValue.isEmpty()) || (contentValue != null && !contentValue.isEmpty()) || (idValue != null && !idValue.isEmpty())) {
@@ -127,6 +132,7 @@ public class SearchActivity extends AppCompatActivity {
             } else if (locations.size() == 1) {
                 // Pega a locaidade, seta o item como selecionado e retorna
                 LocationModel location = locations.get(0);
+                AppManager.location.addMarkerMap(location);
                 AppManager.locationsListView = locations;
                 sendData(location);
             }

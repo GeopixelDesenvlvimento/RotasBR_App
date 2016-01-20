@@ -193,11 +193,30 @@ public class Utils {
      */
     public static String secondsToMinLabel(int seconds){
 
-        int mili = seconds * 1000;
+        /*int mili = seconds * 1000;
         Date date = new Date(mili);
         SimpleDateFormat formatter = new SimpleDateFormat("mm", Locale.ENGLISH);
         formatter.setTimeZone(TimeZone.getTimeZone("America/Sao_Paulo"));
-        return formatter.format(date);
+        return formatter.format(date);*/
+
+        try {
+            int segundos = seconds;
+            int segundo = segundos % 60;
+            int minutos = segundos / 60;
+            int minuto = minutos % 60;
+            int hora = minutos / 60;
+
+            if (hora > 24) {
+                long dias = (long)Math.floor(hora / 24);
+                int rest = hora % 24;
+                return String.format("%02dd %02dh %02d", dias, rest, minuto);
+            }
+
+            return String.format("%02dh %02d", hora, minuto);
+        }catch (Exception error){
+            String teste = error.getMessage();
+            return "";
+        }
     }
 
     /**
